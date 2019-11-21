@@ -1,0 +1,19 @@
+title Get Online User List & Select User
+
+User->System: newConversation
+
+activate System
+
+System->Network: getOnlineUsers()
+
+activate Network
+
+Network-->System: OnlineUsersList()
+
+deactivate Network
+
+System-->User: OnlineUsersList() 
+
+deactivate System
+
+note over User: User can now select an user in the online users\n    list(See 'session start' sequence diagram)

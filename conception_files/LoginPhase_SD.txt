@@ -1,0 +1,44 @@
+title Login phase
+
+User->System: connectionDemand()
+
+activate System
+
+System-->User: askForLogs()
+
+deactivate System
+
+User->System: Logs(login,pwd)
+
+activate System
+activate System
+
+System->Network: isLogsOk(login,pwd)
+
+activate Network
+activate Network
+
+alt isLogsOk == true 
+
+Network-->System: logOK()
+
+deactivate Network
+
+System-->User: Connection accepted()
+
+deactivate System
+
+User->>System: notifyConnection()
+
+else isLogsOK == false
+
+Network-->System: logNOK()
+
+deactivate Network
+
+System-->User: Connection refused()
+
+deactivate System
+
+
+end

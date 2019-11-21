@@ -1,0 +1,49 @@
+title Account Management - Choose pseudo
+
+User-->System: openManagementMode()
+
+loop pseudo==null
+
+System->User: askingForPseudo()
+
+activate User
+
+User->System: choosePseudo(pseudo)
+
+deactivate User
+activate System
+activate System
+
+System->Network: isPseudoValid(pseudo)
+
+activate Network
+activate Network
+
+alt isPseudoValid == true
+
+Network-->System: pseudoOK()
+
+deactivate Network
+activate System
+
+
+
+System-->User: setPseudo(pseudo)
+
+deactivate System
+deactivate System
+
+else isPseudoValid == false
+
+Network-->System: pseudoNOK()
+
+deactivate Network
+activate System
+
+System-->User: setPseudo(null)
+
+deactivate System
+deactivate System
+end
+end
+

@@ -1,0 +1,47 @@
+title Account Management - Change pseudo
+
+User->>System: openManagementMode()
+
+opt changePseudo 
+
+User->System: changesePseudo(newPseudo)
+
+activate System
+activate System
+
+System->Network: isPseudoValid(newPseudo) 
+
+activate Network 
+activate Network 
+
+alt pseudoOK == true 
+
+Network-->System: pseudoOK() 
+
+activate System
+
+deactivate Network 
+
+System-->User: setPseudo(newPseudo) 
+
+deactivate System
+
+deactivate System
+
+else pseudoOK == false 
+
+Network-->System: pseudoNOK() 
+
+activate System
+
+deactivate Network 
+
+System-->User: pseudoInvalid() 
+
+deactivate System
+
+deactivate System
+
+end 
+
+end
