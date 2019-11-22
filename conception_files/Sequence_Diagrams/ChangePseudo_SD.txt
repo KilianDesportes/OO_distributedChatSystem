@@ -1,0 +1,37 @@
+title Change pseudo
+
+
+User->System: changePseudo(pseudo)
+
+activate System
+
+System->>System: Timer On
+
+System->>Network: bdcast_isPseudoTaken(pseudo)
+
+activate Network
+
+alt pseudoAlreadyTaken
+
+Network-->>System: true
+
+deactivate Network
+
+System->>System: TimerStop
+
+System-->User: pseudoNOK()
+
+deactivate System
+
+else
+
+System->>System: TimerExp
+
+
+System-->User: pseudoOK()
+
+System->>Network: notifyConnection(pseudo)
+
+deactivate System
+
+end

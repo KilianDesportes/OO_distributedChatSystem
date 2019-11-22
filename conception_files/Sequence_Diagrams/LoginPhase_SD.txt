@@ -1,0 +1,44 @@
+title Login phase
+
+User->System: connectionDemand()
+
+activate System
+
+System-->User: askForPseudo()
+
+deactivate System
+
+User->System: setPseudo(pseudo)
+
+activate System
+activate System
+
+System->>System: TimerOn
+System->>Network: bdcast_isPseudoTaken(pseudo)
+
+activate Network
+
+alt pseudoAlreadyTaken
+
+Network-->>System: true
+
+deactivate Network
+
+System->>System: TimerStop
+
+System-->User: pseudoNOK()
+
+deactivate System
+
+else
+
+System->>System: TimerExp
+
+
+System-->User: pseudoOK()
+
+System->>Network: notifyConnection(pseudo)
+
+deactivate System
+
+end
