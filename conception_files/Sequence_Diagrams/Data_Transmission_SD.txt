@@ -1,0 +1,99 @@
+title Data Transmission
+
+alt message = text
+
+User->System: sendMessage(message)
+
+activate System
+
+System->Clock: getHour()
+
+activate Clock
+
+Clock->System: hour
+
+deactivate Clock
+
+System->>System: Start Timer
+System->Network: bdcast_sendMessage(message,hour)
+
+activate Network
+
+alt messageAck_received
+
+Network-->System: messageAck()
+
+deactivate Network
+
+System->>System: Stop Timer
+
+System-->User: receptionOk()
+
+else 
+
+System->>System: Exp Timer
+
+System-->User: receptionNOK()
+
+deactivate System
+
+end
+
+else message = file
+
+User->System: selectFile(file)
+
+activate System
+
+System->FileSystem: selectFile(file)
+
+activate FileSystem
+
+FileSystem-->System: file
+
+deactivate FileSystem
+
+System-->User: file
+
+deactivate System
+
+User->System: sendMessageFile(file)
+
+activate System
+
+System->Clock: getHour()
+
+activate Clock
+
+Clock-->System: hour
+
+deactivate Clock
+
+System->>System: Start Timer
+System->Network: bdcast_sendMessageFile(file,hour)
+
+activate Network
+
+alt messageAck_received
+
+Network-->System: messageAck()
+
+deactivate Network
+
+System->>System: Stop Timer
+
+System-->User: receptionOk()
+
+else 
+
+System->>System: Exp Timer
+
+System-->User: receptionNOK()
+
+deactivate System
+
+end
+
+end
+
+

@@ -1,0 +1,15 @@
+title Change status
+
+User->System: getPossibleStatus()
+
+activate System
+
+System-->User: possibleStatus()
+
+deactivate System
+
+User->>System: changeStatus(pseudo,status)
+
+System->>Network: bdcast_statusChange(pseudo,status)
+
+end

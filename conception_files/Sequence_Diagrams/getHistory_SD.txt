@@ -1,0 +1,17 @@
+title Get History
+
+User->System: getHistory(user1,user2,@mac)
+
+activate System
+
+System->FileSystem: getHistory(user1,user2,@mac)
+
+activate FileSystem
+
+FileSystem-->System: history
+
+deactivate FileSystem
+
+System-->User: history
+
+deactivate System

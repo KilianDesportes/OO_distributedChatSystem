@@ -1,0 +1,23 @@
+title Get Online User List
+
+User->System: getOnlineUsers()
+
+activate System
+
+System->>System: Timer On
+
+System->Network: bdcast_getOnlineUsers()
+
+activate Network
+
+note right of Network: Each online user will response with their own pseudo and status.
+
+Network-->System: userOnline(user_pseudo,status)
+
+System->>System: Timer Exp
+
+deactivate Network
+
+System-->User: onlineUserList
+
+deactivate System
