@@ -1,7 +1,10 @@
 # Distribued Chat System 
 DESPORTES Kilian
+
 IMEKRAZ Yanis
-Projet 4IR - 2019/2020
+
+Projet 4IR - 2019/2020 - OOC & OOP section 
+
 
 ---
 
