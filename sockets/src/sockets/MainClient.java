@@ -15,15 +15,15 @@ public class MainClient {
 		 while(true){
 
 			 System.out.println("Enter your message");
-			 String s = scan.next();
+			 String s = scan.nextLine();
 			 InetAddress adr =null;
 			try {
 				adr = InetAddress.getLocalHost();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Message main " + s + " " + adr.toString());
 			 th.sendMessage(s, adr);
+			 s="";
 			 
 		 }
 

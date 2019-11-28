@@ -1,6 +1,7 @@
 package sockets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -11,6 +12,7 @@ public class threadSend extends Thread {
 	private InetAddress target_address;
 	private byte[] buf;
 	private String msg_to_send = "";
+	PrintWriter writer;
 
 	public threadSend () {
 
@@ -49,14 +51,11 @@ public class threadSend extends Thread {
 	}
 
 	public void sendMessage(String message,InetAddress ipAdr){
-		System.out.println("1" + this.msg_to_send);
 
 		msg_to_send = message;
 		target_address = ipAdr;
 
-		System.out.println("sendMessage method");
-		
-		System.out.println("2" + this.msg_to_send);
+		System.out.println("sendMessage method with : " + msg_to_send);
 
 	}
 

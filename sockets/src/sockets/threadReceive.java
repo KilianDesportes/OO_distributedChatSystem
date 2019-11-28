@@ -9,7 +9,7 @@ import java.net.InetAddress;
 public class threadReceive extends Thread {
 	
 	private DatagramSocket socket;
-	private byte[] buffer = new byte[256];
+	private byte[] buffer = new byte[1024];
 	PrintWriter writer;
 
 	public threadReceive () {
@@ -40,10 +40,10 @@ public class threadReceive extends Thread {
 			InetAddress address = packet.getAddress();
 			int port = packet.getPort();
 
-			packet = new DatagramPacket(buffer, buffer.length, address, port);
-			String received = new String(packet.getData(), 0, packet.getLength());
+			String received = new String(packet.getData(),packet.getOffset(),packet.getLength());
 			System.out.println("Packet received : " + received + " from " + address.toString());
-			writer.write(address.toString()+";"+received);
+			System.out.flush();
+			writer.write(address.toString().substring(1)+";"+received+"\n");
 			writer.flush();
 
 		}
