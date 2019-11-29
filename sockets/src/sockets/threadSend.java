@@ -20,6 +20,7 @@ public class threadSend extends Thread {
 	PrintWriter writer;
 	File fileHistory;
 	FileWriter fwriter;
+	private String pseudo;
 
 	public threadSend () {
 
@@ -51,6 +52,7 @@ public class threadSend extends Thread {
 					socket.send(packet);
 					String str = new String(packet.getData(),packet.getOffset(),packet.getLength());
 					System.out.println("Sending " + str + " to " + packet.getAddress().getHostAddress());
+					System.out.flush();
 					writer.write(local_adress+";"+target_address.getHostAddress()+";"+msg_to_send+"\n");
 					writer.flush();
 				} catch (Exception e) {
@@ -71,6 +73,22 @@ public class threadSend extends Thread {
 	public void sendMessage(String message,InetAddress ipAdr){
 		msg_to_send = message;
 		target_address = ipAdr;
+	}
+	
+	public void login(String s)
+	{
+
+		try
+		{
+			InetAddress group = InetAddress.getByName("230.0.0.0");
+			this.pseudo = s;
+			byte[] buffer = s.getBytes();
+			DatagramPacket pack = new DatagramPacket(buffer,buffer.length,group,8889);
+			socket.setBroadcast(true);
+			socket.send(pack);
+		}
+		catch ( Exception e )
+		{ }
 	}
 
 }

@@ -12,6 +12,8 @@ public class MainClient {
 		 th.start();
 		 Scanner scan = new Scanner(System.in);
 		 
+		 th.login("Kilian");
+		 
 		 while(true){
 
 			 System.out.println("Enter your message");
