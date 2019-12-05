@@ -24,9 +24,14 @@ public class MainClient {
 
 		while(true){
 
-			System.out.println("Your message");
+			System.out.println("User you want to reach :");
+			UserList ul = trm.getUserList();
+			ul.printUserList();
 			s = scan.nextLine();
-			InetAddress adr = InetAddress.getByName("10.32.1.151");
+			String s_adr = ul.getAdr(s).getHostAddress();
+			InetAddress adr = InetAddress.getByName(s_adr);
+			System.out.println("Your message to " + s + " at " + s_adr);
+			s = scan.nextLine();
 			th.sendMessage(s, adr);
 
 		}

@@ -23,6 +23,12 @@ public class UserList {
 		}
 		//System.out.println("_____");
 	}
+	
+	public void printUserList() {
+		for (String key : hm_user.keySet()) {
+		    System.out.println("Name : " + key + " | Address : " + hm_user.get(key));
+		}
+	}
 
 	public InetAddress getAdr(String str_pseudo) {
 		return hm_user.get(str_pseudo);

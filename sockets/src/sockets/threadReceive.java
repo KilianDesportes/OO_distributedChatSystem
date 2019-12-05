@@ -57,7 +57,6 @@ public class threadReceive extends Thread {
 
 				writer = new PrintWriter(fwriter);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			String received = new String(packet.getData(),packet.getOffset(),packet.getLength());

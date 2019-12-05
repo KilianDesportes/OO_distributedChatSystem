@@ -70,11 +70,11 @@ public class threadSend extends Thread {
 				}
 				msg_to_send="";
 			}else{
-				if(i%Integer.MAX_VALUE==0){
-					System.out.println(msg_to_send);
-					i=0;
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-				i++;
 			}
 		}
 
@@ -94,7 +94,7 @@ public class threadSend extends Thread {
 
 		try
 		{
-			System.out.println("I am " + this.pseudo + ". I login.");
+			//System.out.println("I am " + this.pseudo + ". I login.");
 			InetAddress group = InetAddress.getByName("230.0.0.0");
 			byte[] buffer = this.pseudo.getBytes();
 			DatagramPacket pack = new DatagramPacket(buffer,buffer.length,group,8889);

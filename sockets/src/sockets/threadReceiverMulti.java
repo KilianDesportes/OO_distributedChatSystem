@@ -27,6 +27,10 @@ public class threadReceiverMulti extends Thread {
 
 	}
 	
+	public UserList getUserList() {
+		return this.userList;
+	}
+	
 	public void setSendingThread(threadSend sdThread) {
 		this.sendingThread = sdThread;
 	}
