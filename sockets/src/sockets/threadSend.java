@@ -41,11 +41,11 @@ public class threadSend extends Thread {
 		Timer tim = new Timer();
 		TimerTask timTask = new TimerTask() {
 			public void run() {
-				System.out.println("User " + pseudo + " is asking who is connected.");
+				//System.out.println("-- User " + pseudo + " is asking who is connected. --");
 				testUserConnected();
 			}
 		};
-		tim.schedule(timTask, 10000);
+		tim.schedule(timTask,0,10000);
 		while(true){
 			if(msg_to_send.compareTo("") != 0){
 				buf = msg_to_send.getBytes();

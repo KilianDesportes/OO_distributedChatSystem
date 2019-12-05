@@ -26,8 +26,8 @@ public class MainClient {
 
 			System.out.println("Your message");
 			s = scan.nextLine();
-			InetAddress adr = InetAddress.getByName("10.32.45.187");
-			th.sendMessage(s, local_adr);
+			InetAddress adr = InetAddress.getByName("10.32.1.151");
+			th.sendMessage(s, adr);
 
 		}
 
