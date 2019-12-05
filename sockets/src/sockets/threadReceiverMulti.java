@@ -38,6 +38,7 @@ public class threadReceiverMulti extends Thread {
 	public void run() {
 
 		System.out.println("ReceiveThreadMulti Running");
+		System.out.flush();
 
 		while (true) {
 
@@ -56,7 +57,7 @@ public class threadReceiverMulti extends Thread {
 				sendingThread.login();
 			}else {
 				userList.addUser(received, address);
-				System.out.println("Packet received multicast from " + address.getHostAddress() + " : Message is ' " + received + " '.");
+				//System.out.println("Packet received multicast from " + address.getHostAddress() + " : Message is ' " + received + " '.");
 				//System.out.flush();
 			}
 		}

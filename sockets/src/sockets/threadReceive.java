@@ -34,6 +34,7 @@ public class threadReceive extends Thread {
 	public void run() {
 		
 		System.out.println("ReceiveThread Running");
+		System.out.flush();
 
 		while (true) {
 			
@@ -61,7 +62,7 @@ public class threadReceive extends Thread {
 			}
 			String received = new String(packet.getData(),packet.getOffset(),packet.getLength());
 			System.out.println("Received " + received + " from " + packet.getAddress().getHostAddress());
-
+			System.out.flush();
 			writer.write(local_adress+";"+address.getHostAddress().toString()+";"+received+"\n");
 			writer.flush();
 

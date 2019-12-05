@@ -23,14 +23,20 @@ public class MainClient {
 		trm.setSendingThread(th);
 
 		while(true){
-
-			System.out.println("User you want to reach :");
+			
+			System.out.println("List of user online :");
+			System.out.flush();
 			UserList ul = trm.getUserList();
 			ul.printUserList();
+			System.out.println("For who is your message ? :");
+			System.out.flush();
+
+			
 			s = scan.nextLine();
 			String s_adr = ul.getAdr(s).getHostAddress();
 			InetAddress adr = InetAddress.getByName(s_adr);
 			System.out.println("Your message to " + s + " at " + s_adr);
+			System.out.flush();
 			s = scan.nextLine();
 			th.sendMessage(s, adr);
 
