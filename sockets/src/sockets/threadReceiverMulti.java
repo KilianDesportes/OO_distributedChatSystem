@@ -48,11 +48,11 @@ public class threadReceiverMulti extends Thread {
 			String received = new String(packet.getData(),packet.getOffset(),packet.getLength());
 			
 			if(received.compareTo("whoIsConnected")==0) {
-				System.out.println("Who is connected received");
+				System.out.println("Who is connected received -- local User " + this.sendingThread.getPseudo());
 				sendingThread.login();
 			}else {
 				userList.addUser(received, address);
-				System.out.println("Packet received multicast : " + received + " from " + address.getHostAddress());
+				System.out.println("Packet received multicast from " + address.getHostAddress() + " : Message is ' " + received + " '.");
 				System.out.flush();
 			}
 		}

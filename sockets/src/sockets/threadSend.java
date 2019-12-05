@@ -41,6 +41,7 @@ public class threadSend extends Thread {
 		Timer tim = new Timer();
 		TimerTask timTask = new TimerTask() {
 			public void run() {
+				System.out.println("User " + pseudo + " is asking who is connected.");
 				testUserConnected();
 			}
 		};
@@ -78,6 +79,10 @@ public class threadSend extends Thread {
 		}
 
 	}
+	
+	public String getPseudo() {
+		return this.pseudo;
+	}
 
 	public void sendMessage(String message,InetAddress ipAdr){
 		msg_to_send = message;
@@ -89,7 +94,7 @@ public class threadSend extends Thread {
 
 		try
 		{
-			System.out.println("I am " + this.pseudo + " connected.");
+			System.out.println("I am " + this.pseudo + ". I login.");
 			InetAddress group = InetAddress.getByName("230.0.0.0");
 			byte[] buffer = this.pseudo.getBytes();
 			DatagramPacket pack = new DatagramPacket(buffer,buffer.length,group,8889);
@@ -103,7 +108,6 @@ public class threadSend extends Thread {
 	public void testUserConnected() {
 		try
 		{
-			System.out.println("Who is connected ?");
 			InetAddress group = InetAddress.getByName("230.0.0.0");
 			String message = "whoIsConnected";
 			byte[] buffer = message.getBytes();

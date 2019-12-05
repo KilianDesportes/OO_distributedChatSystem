@@ -15,11 +15,13 @@ public class UserList {
 
 	public void addUser(String str_pseudo, InetAddress adr_user) {
 		hm_user.put(str_pseudo, adr_user);
+		System.out.println("_____");
 		System.out.println("User " + str_pseudo + " added.");
 		System.out.println("List:");
 		for (String key : hm_user.keySet()) {
-		    System.out.println(key + " " + hm_user.get(key));
+		    System.out.println(key + " at adress " + hm_user.get(key));
 		}
+		System.out.println("_____");
 	}
 
 	public InetAddress getAdr(String str_pseudo) {
