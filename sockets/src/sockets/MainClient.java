@@ -8,14 +8,17 @@ public class MainClient {
 	public static void main(String[] args) throws UnknownHostException {
 
 
-		 threadSend th = new threadSend();
-		 th.start();
+		 new threadReceive().start();
+		 new threadReceiverMulti().start();
+		 
 		 Scanner scan = new Scanner(System.in);
 		 
 		 System.out.println("What is your pseudo?");
 		 String s = scan.nextLine();
 		 
-		 th.login(s);
+		 threadSend th = new threadSend(s);
+		 th.start();
+		 th.login();
 		 
 		 while(true){
 

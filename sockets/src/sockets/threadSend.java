@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.*;
 
 public class threadSend extends Thread {
 
@@ -22,11 +23,12 @@ public class threadSend extends Thread {
 	FileWriter fwriter;
 	private String pseudo;
 
-	public threadSend () {
+	public threadSend (String s) {
 
 		try {
+			this.pseudo = s;
 			socket = new DatagramSocket();
-			local_adress = InetAddress.getLocalHost ().getHostAddress ();
+			local_adress = InetAddress.getLocalHost ().getHostAddress();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -36,6 +38,13 @@ public class threadSend extends Thread {
 	public void run() {
 		int i = 0;
 		System.out.println("SendThread Running");
+		Timer tim = new Timer();
+		TimerTask timTask = new TimerTask() {
+			public void run() {
+				testUserConnected();
+			}
+		};
+		tim.schedule(timTask, 10000);
 		while(true){
 			if(msg_to_send.compareTo("") != 0){
 				buf = msg_to_send.getBytes();
@@ -75,14 +84,29 @@ public class threadSend extends Thread {
 		target_address = ipAdr;
 	}
 	
-	public void login(String s)
+	public void login()
 	{
 
 		try
 		{
+			System.out.println("I am " + this.pseudo + " connected.");
 			InetAddress group = InetAddress.getByName("230.0.0.0");
-			this.pseudo = s;
-			byte[] buffer = s.getBytes();
+			byte[] buffer = this.pseudo.getBytes();
+			DatagramPacket pack = new DatagramPacket(buffer,buffer.length,group,8889);
+			socket.setBroadcast(true);
+			socket.send(pack);
+		}
+		catch ( Exception e )
+		{ }
+	}
+	
+	public void testUserConnected() {
+		try
+		{
+			System.out.println("Who is connected ?");
+			InetAddress group = InetAddress.getByName("230.0.0.0");
+			String message = "whoIsConnected";
+			byte[] buffer = message.getBytes();
 			DatagramPacket pack = new DatagramPacket(buffer,buffer.length,group,8889);
 			socket.setBroadcast(true);
 			socket.send(pack);

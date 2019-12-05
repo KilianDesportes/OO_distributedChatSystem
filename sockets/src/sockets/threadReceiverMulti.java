@@ -10,6 +10,7 @@ public class threadReceiverMulti extends Thread {
 	MulticastSocket sock = null;
 	protected byte[] buffer = new byte[256];
 	protected UserList userList;
+	protected threadSend sendingThread;
 
 
 	public threadReceiverMulti () {
@@ -25,6 +26,10 @@ public class threadReceiverMulti extends Thread {
 		}
 
 	}
+	
+	public void setSendingThread(threadSend sdThread) {
+		this.sendingThread = sdThread;
+	}
 
 	public void run() {
 
@@ -39,15 +44,17 @@ public class threadReceiverMulti extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace(); 
 			}
-
 			InetAddress address = packet.getAddress();
-			int port = packet.getPort();
 			String received = new String(packet.getData(),packet.getOffset(),packet.getLength());
-			userList.addUser(received, address);
-			System.out.println("Packet received multicast : " + received + " from " + address.getHostAddress());
-			System.out.flush();
+			
+			if(received.compareTo("whoIsConnected")==0) {
+				System.out.println("Who is connected received");
+				sendingThread.login();
+			}else {
+				userList.addUser(received, address);
+				System.out.println("Packet received multicast : " + received + " from " + address.getHostAddress());
+				System.out.flush();
+			}
 		}
-
 	}
-
 }
