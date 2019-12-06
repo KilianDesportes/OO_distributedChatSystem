@@ -1,22 +1,20 @@
 package sockets;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+import javax.swing.SpringLayout;
 
 public class mainFrame extends JFrame {
 
@@ -33,40 +31,35 @@ public class mainFrame extends JFrame {
 	private JPanel jpanel_msgs = new JPanel();
 
 	public mainFrame(){
+		
+		int nb_conversations = 4;
 
-		this.setSize(300,300);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 
 		this.setLayout(new BorderLayout());
 
-
-		String msg_test = "Salut, comment ca va aujourd'hui?";
+		jpanel_msgs.setLayout(new GridLayout(nb_conversations,1));
+		
+		
+		
+		String msg_test = "Salut, comment ca va aujourd'hui? J'aimerais que l'on puisse avancer sur les interfaces graphiques en POO ca serait cool qu'on se voit d'ici la fin de la semaine.";
 
 		JScrollPane scrollPane = new JScrollPane(jpanel_msgs);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(50, 30, 300, 50);
-
+		
 		jpanel_msgs.add(new panelConversation("Michel",msg_test));
 
-		jpanel_msgs.add(new JSeparator());
 
 		jpanel_msgs.add(new panelConversation("Nom",msg_test));
 
-		jpanel_msgs.add(new JSeparator());
 
 		jpanel_msgs.add(new panelConversation("Jacques",msg_test));
 
-		jpanel_msgs.add(new JSeparator());
 
 		jpanel_msgs.add(new panelConversation("Mister",msg_test));
-
-		jpanel_msgs.add(new JSeparator());
-
-		jpanel_msgs.add(new panelConversation("Meh",msg_test));
-
 
 		this.add(jpanel_msgs);
 
@@ -91,6 +84,7 @@ public class mainFrame extends JFrame {
 		this.menuBar.add(jmenu_options);  
 		this.menuBar.add(jmenu_help);  
 
+		this.pack();
 		this.setJMenuBar(menuBar);
 		this.setVisible(true);
 	}

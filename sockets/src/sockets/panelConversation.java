@@ -14,8 +14,16 @@ public class panelConversation extends JPanel {
 
 	public panelConversation(String name, String message) {
 		
+		int str_length = message.length();
+		int i = 0;
+		if(str_length > 40) {
+			
+		}
+		
 		jlabel_name = new JLabel(name);
 		jlabel_name.setFont(new Font("Courier",Font.BOLD,15));
+		jlabel_name.setBorder(BorderFactory.createEmptyBorder(0,0,4,0)); 
+
 		
 		jlabel_lastmsg = new JLabel(message);
 		jlabel_lastmsg.setFont(new Font("Courier",0,12));
