@@ -45,7 +45,7 @@ public class threadSend extends Thread {
 				testUserConnected();
 			}
 		};
-		tim.schedule(timTask,0,10000);
+		tim.schedule(timTask,0,5000);
 		while(true){
 			if(msg_to_send.compareTo("") != 0){
 				buf = msg_to_send.getBytes();
