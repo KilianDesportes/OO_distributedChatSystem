@@ -1,11 +1,8 @@
 package sockets;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -38,6 +35,7 @@ public class threadSend extends Thread {
 	public void run() {
 		int i = 0;
 		System.out.println("SendThread Running");
+		System.out.flush();
 		Timer tim = new Timer();
 		TimerTask timTask = new TimerTask() {
 			public void run() {

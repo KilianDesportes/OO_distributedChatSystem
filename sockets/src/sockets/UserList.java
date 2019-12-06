@@ -42,15 +42,22 @@ public class UserList {
 	public void printUserList() {
 		for (String key : hm_user.keySet()) {
 		    System.out.println("Name : " + key + " | Address : " + hm_user.get(key));
+		    System.out.flush();
 		}
 	}
 
 	public InetAddress getAdr(String str_pseudo) {
-		return hm_user.get(str_pseudo);
+		InetAddress returned_adr = null;
+		if(hm_user.containsKey(str_pseudo)) {
+			returned_adr = hm_user.get(str_pseudo);
+		}
+		return returned_adr;
 	}
 
 	public void removeUser(String str) {
-		hm_user.remove(str);
+		if(hm_user.containsKey(str)) {
+			hm_user.remove(str);
+		}
 	}
 
 	
