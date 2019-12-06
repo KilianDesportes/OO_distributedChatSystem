@@ -6,6 +6,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -32,16 +35,13 @@ public class mainFrame extends JFrame {
 
 	public mainFrame(){
 		
-		int nb_conversations = 4;
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 
 		this.setLayout(new BorderLayout());
 
-		jpanel_msgs.setLayout(new GridLayout(nb_conversations,1));
-		
-		
+		jpanel_msgs.setLayout(new BoxLayout(jpanel_msgs, BoxLayout.Y_AXIS));
 		
 		String msg_test = "Salut, comment ca va aujourd'hui? J'aimerais que l'on puisse avancer sur les interfaces graphiques en POO ca serait cool qu'on se voit d'ici la fin de la semaine.";
 
@@ -50,16 +50,17 @@ public class mainFrame extends JFrame {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(50, 30, 300, 50);
 		
+		panelConversation p = new panelConversation("Michel",msg_test);
+		
+		jpanel_msgs.add(p);
+		
+		jpanel_msgs.add(new JSeparator());
+		jpanel_msgs.add(new panelConversation("Michel","yo"));
+
+		jpanel_msgs.add(new JSeparator());
 		jpanel_msgs.add(new panelConversation("Michel",msg_test));
+		
 
-
-		jpanel_msgs.add(new panelConversation("Nom",msg_test));
-
-
-		jpanel_msgs.add(new panelConversation("Jacques",msg_test));
-
-
-		jpanel_msgs.add(new panelConversation("Mister",msg_test));
 
 		this.add(jpanel_msgs);
 
@@ -84,8 +85,9 @@ public class mainFrame extends JFrame {
 		this.menuBar.add(jmenu_options);  
 		this.menuBar.add(jmenu_help);  
 
-		this.pack();
 		this.setJMenuBar(menuBar);
+
+		this.pack();
 		this.setVisible(true);
 	}
 }
