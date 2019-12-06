@@ -25,20 +25,21 @@ public class loginFrame extends JFrame {
 	public loginFrame()
 	{
 		super("Char System Login");
-		jframe_mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jframe_mainFrame.setLocationRelativeTo(null);
+
 
 		jpanel_mainPanel = new JPanel();
 		jpanel_mainPanel.setLayout(new BorderLayout());
 		jpanel_mainPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); 
-
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setResizable(false);
 		
 		jpanel_pseudo = new JPanel();
 		jpanel_pseudo.setLayout(new GridLayout(2,1));
 		jpanel_pseudo.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); 
 
 
-		jframe_mainFrame.getContentPane().add(jpanel_mainPanel);
+		getContentPane().add(jpanel_mainPanel);
 
 		jlabel_welcome = new JLabel("Bienvenue sur notre chat system online!");
 		jlabel_welcome.setFont(new Font("Courier",Font.BOLD,20));
@@ -48,7 +49,6 @@ public class loginFrame extends JFrame {
 		JTextField jtextfield_pseudo = new JTextField();  
 		jtextfield_pseudo.setToolTipText("Please enter your pseudo here");
 		jtextfield_pseudo.setHorizontalAlignment(JTextField.CENTER);
-
 		jpanel_pseudo.add(jlabel_pseudo);
 		jpanel_pseudo.add(jtextfield_pseudo);
 		
@@ -58,8 +58,8 @@ public class loginFrame extends JFrame {
 		jpanel_mainPanel.add(jpanel_pseudo,BorderLayout.CENTER);
 		jpanel_mainPanel.add(jbutConnect,BorderLayout.SOUTH);
 
-		jframe_mainFrame.pack();
-		jframe_mainFrame.setVisible(true);
+		pack();
+		setVisible(true);
 
 	}
 
