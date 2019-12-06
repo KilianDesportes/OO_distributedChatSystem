@@ -1,5 +1,7 @@
 package sockets;
 
+
+import java.time.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -9,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.time.LocalDateTime;
 
 public class threadReceive extends Thread {
 	
@@ -60,8 +63,14 @@ public class threadReceive extends Thread {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			int year = LocalDateTime.now().getYear();
+			int month = LocalDateTime.now().getMonthValue();
+			int day = LocalDateTime.now().getDayOfMonth();
+			int hour = LocalDateTime.now().getHour();
+			int min = LocalDateTime.now().getMinute();
+			
 			String received = new String(packet.getData(),packet.getOffset(),packet.getLength());
-			System.out.println("Received " + received + " from " + packet.getAddress().getHostAddress());
+			System.out.println("Received " + received + " from " + packet.getAddress().getHostAddress()+" at ["+hour+":"+min+" - "+day+"/"+month+"/"+year+"]");
 			System.out.flush();
 			writer.write(local_adress+";"+address.getHostAddress().toString()+";"+received+"\n");
 			writer.flush();
