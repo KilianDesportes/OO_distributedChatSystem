@@ -13,8 +13,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 
-public class threadReceive extends Thread {
-	
+public class threadReceiver extends Thread {
+
 	private DatagramSocket socket;
 	private byte[] buffer = new byte[1024];
 	private String local_adress;
@@ -22,11 +22,11 @@ public class threadReceive extends Thread {
 	FileWriter fwriter;
 	PrintWriter writer;
 
-	public threadReceive () {
+	public threadReceiver () {
 
 		try {
 			socket = new DatagramSocket(8888);
-			local_adress = InetAddress.getLocalHost ().getHostAddress ();
+			local_adress = InetAddress.getLocalHost().getHostAddress();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -34,13 +34,19 @@ public class threadReceive extends Thread {
 
 	}
 
+	@Override
+	public boolean isInterrupted() {
+		// TODO Auto-generated method stub
+		return super.isInterrupted();
+	}
+
 	public void run() {
-		
+
 		System.out.println("ReceiveThread Running");
 		System.out.flush();
 
 		while (true) {
-			
+
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
 			try {
@@ -68,11 +74,11 @@ public class threadReceive extends Thread {
 			int day = LocalDateTime.now().getDayOfMonth();
 			int hour = LocalDateTime.now().getHour();
 			int min = LocalDateTime.now().getMinute();
-			
+
 			String received = new String(packet.getData(),packet.getOffset(),packet.getLength());
 			System.out.println("Received " + received + " from " + packet.getAddress().getHostAddress()+" at ["+hour+":"+min+" - "+day+"/"+month+"/"+year+"]");
 			System.out.flush();
-			writer.write(local_adress+";"+address.getHostAddress().toString()+";"+received+"\n");
+			writer.write(local_adress+";"+address.getHostAddress().toString()+";"+received+";"+hour+"/"+min+"/"+day+"/"+month+"/"+year+"\n");
 			writer.flush();
 
 		}

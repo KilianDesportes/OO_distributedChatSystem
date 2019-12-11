@@ -10,11 +10,11 @@ public class threadReceiverMulti extends Thread {
 	MulticastSocket sock = null;
 	protected byte[] buffer = new byte[256];
 	protected UserList userList;
-	protected threadSend sendingThread;
+	protected messageSender mSender;
+	private boolean isValid = true;
 
 
 	public threadReceiverMulti () {
-		
 		userList = new UserList();
 		
 		try {
@@ -31,14 +31,24 @@ public class threadReceiverMulti extends Thread {
 		return this.userList;
 	}
 	
-	public void setSendingThread(threadSend sdThread) {
-		this.sendingThread = sdThread;
+	public void setSender(messageSender ms_mSender) {
+		this.mSender = ms_mSender;
+	}
+	
+	public boolean isPseudoValid() {
+		mSender.sendIsPseudoValid();
+		long time = System.currentTimeMillis();
+		while(System.currentTimeMillis() - time < 1000) {
+			
+		}
+		if(isValid==true) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 	public void run() {
-
-		System.out.println("ReceiveThreadMulti Running");
-		System.out.flush();
 
 		while (true) {
 
@@ -52,13 +62,18 @@ public class threadReceiverMulti extends Thread {
 			InetAddress address = packet.getAddress();
 			String received = new String(packet.getData(),packet.getOffset(),packet.getLength());
 			
+			
 			if(received.compareTo("whoIsConnected")==0) {
-				//System.out.println("Who is connected received -- local User " + this.sendingThread.getPseudo());
-				sendingThread.login();
+				mSender.login();
+			}else if(received.contains("isPseudoValid>")){
+				received = received.substring(14);
+				System.out.println("Pseudo received = " + received);
+				if(received==this.mSender.getPseudo()) {
+					System.out.println("Même pseudo que le mien");
+					isValid = false;
+				}
 			}else {
 				userList.addUser(received, address);
-				//System.out.println("Packet received multicast from " + address.getHostAddress() + " : Message is ' " + received + " '.");
-				//System.out.flush();
 			}
 		}
 	}

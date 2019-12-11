@@ -38,7 +38,7 @@ public class mainFrame extends JFrame {
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-
+		this.setResizable(false);
 		this.setLayout(new BorderLayout());
 
 		jpanel_msgs.setLayout(new BoxLayout(jpanel_msgs, BoxLayout.Y_AXIS));

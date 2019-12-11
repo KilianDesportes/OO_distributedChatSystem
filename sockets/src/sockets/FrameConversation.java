@@ -16,7 +16,7 @@ public class FrameConversation  {
 		convFrame .setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		convFrame.setSize(new Dimension(350,500));
 		
-			
+		convFrame.setLocationRelativeTo(null);	
 		convFrame.setVisible(true);
 	}
 

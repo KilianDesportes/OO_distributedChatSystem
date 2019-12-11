@@ -36,14 +36,6 @@ public class panelConversation extends JPanel {
 
 		setBorder(BorderFactory.createEmptyBorder(0,10,0,10)); 
 		
-		this.addMouseListener(new MouseAdapter()  
-		{  
-		    public void mouseClicked(MouseEvent e)  
-		    {  
-		    	//Ouverture fenetre de conversation
-
-		    }  
-		}); 
 	}
 
 	private String format_Label(String message) {
