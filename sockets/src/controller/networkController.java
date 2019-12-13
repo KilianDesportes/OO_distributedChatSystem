@@ -33,6 +33,10 @@ public class networkController{
 			
 	
 	public void setSender(String pseudo) {
+		
+		System.out.println("networkController - setSender");
+
+		
 		messageSender mSender = new messageSender(pseudo);
 		threadRecvMulti.setSender(mSender);
 		System.out.println("Set Sender OK");
@@ -40,6 +44,8 @@ public class networkController{
 	}
 	
 	public boolean isNetworkOk() {
+		System.out.println("networkController - isNetworkOk");
+
 		boolean bool = false;
 		if(threadRecvMulti.isAlive() && threadRecv.isAlive()) {
 			bool = true;
@@ -48,6 +54,8 @@ public class networkController{
 	}
 	
 	public boolean isPseudoOk() {
+		System.out.println("networkController - isPseudoOk");
+
 		return threadRecvMulti.isPseudoValid();
 	}
 	

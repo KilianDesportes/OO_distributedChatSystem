@@ -24,6 +24,7 @@ public class messageSender {
 			this.pseudo = s;
 			socket = new DatagramSocket();
 			local_adress = InetAddress.getLocalHost ().getHostAddress();
+			System.out.println("MSG SENDER " + local_adress);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -31,6 +32,9 @@ public class messageSender {
 	}
 
 	public void sendMessage(String message_to_send,InetAddress target_address){
+		
+		System.out.println("messageSender - sendMessage");
+
 
 
 		buf = message_to_send.getBytes();
@@ -68,6 +72,8 @@ public class messageSender {
 	}
 	
 	public void sendIsPseudoValid() {
+		System.out.println("messageSender - sendIsPseudoValid");
+
 		try
 		{
 			InetAddress group = InetAddress.getByName("230.0.0.0");
@@ -83,6 +89,7 @@ public class messageSender {
 
 	public void login()
 	{
+		System.out.println("messageSender - login");
 
 		try
 		{
@@ -97,6 +104,8 @@ public class messageSender {
 	}
 
 	public void testUserConnected() {
+		System.out.println("messageSender - testUserConnected");
+
 		try
 		{
 			InetAddress group = InetAddress.getByName("230.0.0.0");

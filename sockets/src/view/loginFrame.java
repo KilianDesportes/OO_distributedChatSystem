@@ -78,6 +78,9 @@ public class loginFrame extends JFrame {
 	}
 
 	private boolean isPseudoValid(String pseudo) {
+		
+		System.out.println("loginFrame - isPseudoVAlid");
+		
 		if(pseudo.compareTo("faux")==0) {
 			return false;
 		}else {

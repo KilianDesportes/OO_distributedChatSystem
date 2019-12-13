@@ -2,6 +2,7 @@ package sockets;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.NetworkInterface;
@@ -19,6 +20,8 @@ public class threadReceiverMulti extends Thread {
 
 
 	public threadReceiverMulti () {
+		System.out.println("threadReceiverMulti - threadReceiverMulti");
+
 		userList = new UserList();
 
 		try { 
@@ -26,10 +29,14 @@ public class threadReceiverMulti extends Thread {
 			while (interfaces.hasMoreElements()) { 
 				NetworkInterface interfaceN = (NetworkInterface) interfaces.nextElement(); 
 				Enumeration<InetAddress> iEnum = interfaceN.getInetAddresses(); 
+
 				while (iEnum.hasMoreElements()) { 
-					InetAddress inetAddress = iEnum.nextElement(); 
-					if(interfaceN.getDisplayName().compareTo("lo")!=0) {
-						public_address = inetAddress;
+
+					InetAddress ia= (InetAddress) iEnum.nextElement();
+					if (!ia.isLinkLocalAddress() 
+							&& !ia.isLoopbackAddress()
+							&& ia instanceof Inet4Address) {
+						public_address = ia;
 						System.out.println("Public address = " + this.public_address);
 					}
 
@@ -57,15 +64,22 @@ public class threadReceiverMulti extends Thread {
 	}
 
 	public void setSender(messageSender ms_mSender) {
+		System.out.println("threadReceiverMulti - setSender");
+
 		this.mSender = ms_mSender;
 	}
 
 	public boolean isPseudoValid() {
+
+		System.out.println("threadReceiverMulti - isPseudoValid");
+
+
 		mSender.sendIsPseudoValid();
 		long time = System.currentTimeMillis();
-		while(System.currentTimeMillis() - time < 1000) {
+		while(System.currentTimeMillis() - time < 2000) {
 
 		}
+		System.out.println("isValid " + isValid);
 		if(isValid==true) {
 			return true;
 		}else {
@@ -91,21 +105,32 @@ public class threadReceiverMulti extends Thread {
 			if(received.compareTo("whoIsConnected")==0) {
 				mSender.login();
 			}else if(received.contains("isPseudoValid>")){
+
 				received = received.substring(14);
 				System.out.println("Pseudo received = " + received);
 
+				try {
+					System.out.println(InetAddress.getLocalHost().getHostAddress());
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+
 				if((received.compareTo(this.mSender.getPseudo())) == 0 && (!public_address.equals(address))) {
-					
+
 					System.out.println("Inet mienne : " + public_address + " sienne " + address);
 					System.out.println("Même pseudo que le mien");
-					isValid = false;
-					
+
+					mSender.sendMessage("isPseudoValidNOK", address);
+
 				}else {
 
 					System.out.println("Inet mienne : " + public_address + " sienne " + address);
 					System.out.println("Pseudo différents, je suis " + this.mSender.getPseudo() + " il est " + received);
-					
 				}
+
+			}else if(received.contains("isPseudoValidNOK")) {
+				isValid = false;
+
 			}else {
 				userList.addUser(received, address);
 			}

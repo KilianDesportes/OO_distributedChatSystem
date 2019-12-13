@@ -19,8 +19,8 @@ public class mainController {
 	
 	
 	public boolean setSender(String s_pseudo) {
+		System.out.println("mainController - setSender");
 		boolean ret = false;
-		System.out.println("New pseudo test");
 		networkController.setSender(s_pseudo);
 
 		if(networkController.isPseudoOk()) {
@@ -32,6 +32,7 @@ public class mainController {
 	}
 	
 	public void startApplication() {
+		System.out.println("mainController - startApplication");
 		new mainFrame();
 		f.setVisible(false);
 	}
