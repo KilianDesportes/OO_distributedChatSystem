@@ -52,35 +52,15 @@ public class loginFrame extends JFrame {
 		jlabel_welcome = new JLabel("Bienvenue sur notre chat system online!");
 		jlabel_welcome.setFont(new Font("Courier",Font.BOLD,20));
 
-		jlabel_pseudo = new JLabel("Entrez votre pseudonyme");
-
-		JTextField jtextfield_pseudo = new JTextField();  
-		jtextfield_pseudo.setToolTipText("Please enter your pseudo here");
-		jtextfield_pseudo.setHorizontalAlignment(JTextField.CENTER);
-		jpanel_pseudo.add(jlabel_pseudo);
-		jpanel_pseudo.add(jtextfield_pseudo);
-
 		jbutConnect = new JButton("Connect");
 
 		jbutConnect.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				String pseudo = jtextfield_pseudo.getText();
+	                String pseudo = JOptionPane.showInputDialog(jframe_mainFrame,
+	                        "What is your pseudo?", null);
 				
-				JOptionPane pane = new JOptionPane("Checking pseudo", JOptionPane.INFORMATION_MESSAGE);
-				JDialog dialog = pane.createDialog(null, "Checking pseudo");
-				//dialog.setUndecorated(false);
-		        dialog.setLocationRelativeTo(null);
-		        dialog.add(new JLabel("Salut"));
-		        dialog.setModal(false);
-                dialog.setVisible(true);
-                new Timer(1000, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        dialog.setVisible(false);
-                    }
-                }).start();
 				boolean b = c.setSender(pseudo);
 				if(!b || !isPseudoValid(pseudo)) {
 					JOptionPane.showMessageDialog(null, "Pseudo non correct", "Attention", JOptionPane.WARNING_MESSAGE); 
