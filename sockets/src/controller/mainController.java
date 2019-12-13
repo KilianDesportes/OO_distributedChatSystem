@@ -1,4 +1,7 @@
-package sockets;
+package controller;
+
+import view.loginFrame;
+import view.mainFrame;
 
 public class mainController {
 	

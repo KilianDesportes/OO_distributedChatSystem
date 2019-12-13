@@ -1,7 +1,6 @@
-package sockets;
+package view;
 
 import java.awt.*;
-import java.net.*;
 import javax.swing.*;
 
 public class FrameConversation  {

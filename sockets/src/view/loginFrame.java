@@ -1,4 +1,4 @@
-package sockets;
+package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,15 +20,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
+import controller.mainController;
+
 public class loginFrame extends JFrame {
 
 	JFrame jframe_mainFrame;
 	JPanel jpanel_mainPanel;
-	JPanel jpanel_pseudo;
 	JButton jbutConnect;
-	JTextField jtextfield_pseudo;
 	JLabel jlabel_welcome;
-	JLabel jlabel_pseudo;
 
 	public loginFrame(mainController c)
 	{
@@ -41,10 +40,6 @@ public class loginFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
-
-		jpanel_pseudo = new JPanel();
-		jpanel_pseudo.setLayout(new GridLayout(2,1));
-		jpanel_pseudo.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); 
 
 
 		getContentPane().add(jpanel_mainPanel);
@@ -60,11 +55,12 @@ public class loginFrame extends JFrame {
 			{
 	                String pseudo = JOptionPane.showInputDialog(jframe_mainFrame,
 	                        "What is your pseudo?", null);
+	                
+	                System.out.println("Pseudo entré = " + pseudo);
 				
 				boolean b = c.setSender(pseudo);
 				if(!b || !isPseudoValid(pseudo)) {
 					JOptionPane.showMessageDialog(null, "Pseudo non correct", "Attention", JOptionPane.WARNING_MESSAGE); 
-					jtextfield_pseudo.setText("");				
 				}else {
 					c.startApplication();
 				}
@@ -74,7 +70,6 @@ public class loginFrame extends JFrame {
 		jpanel_mainPanel.getRootPane().setDefaultButton(jbutConnect);
 
 		jpanel_mainPanel.add(jlabel_welcome,BorderLayout.NORTH);
-		jpanel_mainPanel.add(jpanel_pseudo,BorderLayout.CENTER);
 		jpanel_mainPanel.add(jbutConnect,BorderLayout.SOUTH);
 
 		pack();

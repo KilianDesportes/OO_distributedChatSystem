@@ -1,8 +1,11 @@
-package sockets;
+package controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import sockets.messageSender;
+import sockets.threadReceiver;
+import sockets.threadReceiverMulti;
 
 public class networkController{
 	
