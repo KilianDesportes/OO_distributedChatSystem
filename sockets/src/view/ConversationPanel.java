@@ -12,12 +12,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class panelConversation extends JPanel {
+public class ConversationPanel extends JPanel {
 
 	protected JLabel jlabel_name;
 	protected JLabel jlabel_lastmsg;
 
-	public panelConversation(String name, String message) {
+	public ConversationPanel(String name, String message) {
 
 		message = format_Label(message);
 

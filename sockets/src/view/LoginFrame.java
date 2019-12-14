@@ -20,16 +20,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
-import controller.mainController;
+import controller.MainController;
 
-public class loginFrame extends JFrame {
+public class LoginFrame extends JFrame {
 
 	JFrame jframe_mainFrame;
 	JPanel jpanel_mainPanel;
 	JButton jbutConnect;
 	JLabel jlabel_welcome;
 
-	public loginFrame(mainController c)
+	public LoginFrame(MainController c)
 	{
 		super("Char System Login");
 
@@ -58,8 +58,12 @@ public class loginFrame extends JFrame {
 	                
 	                System.out.println("Pseudo entré = " + pseudo);
 				
-				boolean b = c.setSender(pseudo);
-				if(!b || !isPseudoValid(pseudo)) {
+				
+	                
+	                boolean b = c.getNetworkController().isPseudoValid(pseudo);
+				
+				
+				if(!b || !c.isPseudoValid(pseudo)) {
 					JOptionPane.showMessageDialog(null, "Pseudo non correct", "Attention", JOptionPane.WARNING_MESSAGE); 
 				}else {
 					c.startApplication();
@@ -77,16 +81,7 @@ public class loginFrame extends JFrame {
 
 	}
 
-	private boolean isPseudoValid(String pseudo) {
-		
-		System.out.println("loginFrame - isPseudoVAlid");
-		
-		if(pseudo.compareTo("faux")==0) {
-			return false;
-		}else {
-			return true;
-		}
-	}
+	
 
 
 }

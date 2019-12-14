@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.io.*;
 
 
-public class FrameConversation  {
+public class ConversationFrame  {
 
 	JPanel panel;
 	JFrame convFrame;
@@ -19,7 +19,7 @@ public class FrameConversation  {
 
 
 
-	public FrameConversation(String pseudo/*,InetAddress addIp*/)
+	public ConversationFrame(String pseudo/*,InetAddress addIp*/)
 	{
 
 		this.convFrame = new JFrame(pseudo);

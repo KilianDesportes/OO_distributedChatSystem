@@ -19,7 +19,7 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 
-public class mainFrame extends JFrame {
+public class MainFrame extends JFrame {
 
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu jmenu_options = new JMenu("Options");
@@ -33,7 +33,7 @@ public class mainFrame extends JFrame {
 
 	private JPanel jpanel_msgs = new JPanel();
 
-	public mainFrame(){
+	public MainFrame(){
 		
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,15 +50,15 @@ public class mainFrame extends JFrame {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(50, 30, 300, 50);
 		
-		panelConversation p = new panelConversation("Michel",msg_test);
+		ConversationPanel p = new ConversationPanel("Michel",msg_test);
 		
 		jpanel_msgs.add(p);
 		
 		jpanel_msgs.add(new JSeparator());
-		jpanel_msgs.add(new panelConversation("Michel","yo"));
+		jpanel_msgs.add(new ConversationPanel("Michel","yo"));
 
 		jpanel_msgs.add(new JSeparator());
-		jpanel_msgs.add(new panelConversation("Michel",msg_test));
+		jpanel_msgs.add(new ConversationPanel("Michel",msg_test));
 		
 
 

@@ -1,4 +1,4 @@
-package sockets;
+package model;
 
 import java.net.InetAddress;
 import java.util.*;
@@ -6,7 +6,7 @@ import java.util.*;
 public class UserList {
 
 	protected HashMap<String,InetAddress> hm_user;
-	protected HashMap<String,Timer> majUser; //HM pseudo + timer associé
+	protected HashMap<String,Timer> majUser; //HM pseudo + timer associï¿½
 	
 
 	public UserList() {
