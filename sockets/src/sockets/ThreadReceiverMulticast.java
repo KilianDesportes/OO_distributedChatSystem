@@ -1,16 +1,9 @@
 package sockets;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.NetworkInterface;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import model.UserList;
+import java.util.concurrent.BlockingQueue;
 
 public class ThreadReceiverMulticast extends Thread {
 
@@ -18,9 +11,9 @@ public class ThreadReceiverMulticast extends Thread {
 
 	private byte[] buffer = new byte[256];
 
-	private LinkedBlockingQueue<DatagramPacket> messages_Queue;
+	private BlockingQueue<DatagramPacket> messages_Queue;
 
-	public ThreadReceiverMulticast(LinkedBlockingQueue<DatagramPacket> networkController_messages_Queue) {
+	public ThreadReceiverMulticast(BlockingQueue<DatagramPacket> networkController_messages_Queue) {
 
 		this.messages_Queue = networkController_messages_Queue;
 
@@ -49,6 +42,10 @@ public class ThreadReceiverMulticast extends Thread {
 				sock.receive(packet);
 
 				this.messages_Queue.put(packet);
+				
+				String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
+				
+				System.out.println("QUEUE PUT : " + received);
 
 			} catch (Exception e) {
 

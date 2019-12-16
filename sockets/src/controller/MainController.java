@@ -1,12 +1,14 @@
 package controller;
 
 import model.UserList;
+import sockets.MessageSender;
 import view.LoginFrame;
 import view.MainFrame;
 
 public class MainController {
 
 	private NetworkController networkController;
+	private MessageSender mSender;
 	private LoginFrame f;
 
 	private UserList userList;
@@ -16,9 +18,10 @@ public class MainController {
 		f = new LoginFrame(this);
 
 		this.userList = new UserList();
+		this.mSender = new MessageSender();
 
-		networkController = new NetworkController(this.userList);
-		networkController.startReceptionThread();
+		this.networkController = new NetworkController(this.userList);
+		this.networkController.start();
 
 	}
 
@@ -36,16 +39,28 @@ public class MainController {
 	}
 
 	public boolean isPseudoValid(String pseudo) {
+		
+		this.networkController.setStateCheck();
+		
+		boolean valid = true;
+		
+		String msg_to_send = "isPseudoValid>" + pseudo;
 
-		boolean pseudo_valid = true;
+		mSender.sendMessageMulticast(msg_to_send);
+		
+		long time = System.currentTimeMillis();
 
-		if (pseudo.compareTo("faux") == 0) {
+		while (System.currentTimeMillis() - time < 2500 && !this.networkController.isConnected()) {
+			
+		}
 
-			pseudo_valid = false;
+		if ( !this.networkController.isConnected() ) {
+			
+			valid = false;
 
 		}
 
-		return pseudo_valid;
+		return valid;
 	}
 
 }

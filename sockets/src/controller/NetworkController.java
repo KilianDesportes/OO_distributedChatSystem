@@ -2,147 +2,186 @@ package controller;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.Enumeration;
-import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 import model.UserList;
 import sockets.MessageSender;
 import sockets.ThreadReceiverUDP;
 import sockets.ThreadReceiverMulticast;
 
-public class NetworkController {
+public class NetworkController extends Thread {
+
+	private enum State {
+		CONNECTED, UNCONNECTED, CHECKINGPSEUDO, REBOOTING
+	};
 
 	private ThreadReceiverMulticast threadRecvMulti;
 	private ThreadReceiverUDP threadRecv;
 	private MessageSender messageSender;
 	private InetAddress local_inetAdr;
 	private String local_pseudo = "unconnected_user";
-	private LinkedBlockingQueue<DatagramPacket> messages_Queue;
-
+	private BlockingQueue<DatagramPacket> messages_Queue;
 	private boolean isPseudoValid = true;
-
-	private enum State {
-		CONNECTED, UNCONNCTED, CHECKINGPSEUDO, REBOOTING
-	};
-
 	private State current_state;
-
-	// FAIRE UNE SORTE D ENUM AVEC PLUSIEURS ETATS (checking pseudo, non connecté,
-	// connecté, redemarrage?) POUR FAIRE MOINS DE IF DANS LE MESSAGE TREATMENT
-
 	private UserList main_userList;
 
 	public NetworkController(UserList mainMaincontroller_UserList) {
 
-		this.current_state = State.UNCONNCTED;
-
+		this.current_state = State.UNCONNECTED;
 		this.messages_Queue = new LinkedBlockingQueue<>();
 		this.main_userList = mainMaincontroller_UserList;
-
 		this.threadRecvMulti = new ThreadReceiverMulticast(this.messages_Queue);
 		this.threadRecv = new ThreadReceiverUDP(this.messages_Queue);
 		this.messageSender = new MessageSender();
-
 		this.local_inetAdr = this.getLocalAddress();
 
 	}
 
-	public void messageTreatment() {
+	public void start() {
+		threadRecvMulti.start();
+		threadRecv.start();
+		super.start();
+	}
 
-		while (this.isNetworkOk() && this.current_state == State.CONNECTED) {
+	public void run() {
 
-			DatagramPacket packet = messages_Queue.peek();
+		while (this.isNetworkOk()) {
 
-			InetAddress address = packet.getAddress();
+			DatagramPacket packet = null;
 
-			String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
+			if (this.current_state == State.CONNECTED) {
 
-			System.out.println("Multicast packet ? -> " + address.isMulticastAddress());
+				System.out.println("State CONNECTED");
 
-			if (received.contains("isPseudoValid>")) {
+				try {
 
-				String pseudo_received = received.substring(14);
+					packet = messages_Queue.poll(200, TimeUnit.MILLISECONDS);
 
-				if (pseudo_received.compareTo(this.local_pseudo) == 0) {
+				} catch (InterruptedException e) {
 
-					this.sendPseudoReponseNOK(address);
-
-				} else {
-
-					// Pseudo OK - Nothing to do
-				}
-
-			} else if (received.compareTo("whoIsConnected") == 0) {
-
-				if (this.local_pseudo.compareTo("unconnected_user") != 0) {
-
-					this.login(this.local_pseudo);
+					e.printStackTrace();
 
 				}
 
-			} else if (address.isMulticastAddress()) {
+				if (packet != null) {
 
-				// Test SYSO au dessus du if
+					InetAddress address = packet.getAddress();
 
-				main_userList.addUser(received, address);
+					String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
-			} else {
+					if (received.contains("isPseudoValid>")) {
 
-				System.out.println("Received " + received + " from " + packet.getAddress().getHostAddress() + " at "
-						+ this.getTime(";", "-", "/"));
-				System.out.flush();
+						String pseudo_received = received.substring(14);
 
-				writeFileReceived(received, packet.getAddress());
+						if (pseudo_received.compareTo(this.local_pseudo) == 0) {
+
+							this.sendPseudoReponseNOK(address);
+
+						} else {
+
+							// Pseudo OK - Nothing to do
+						}
+
+					} else if (received.compareTo("whoIsConnected") == 0) {
+
+						if (this.local_pseudo.compareTo("unconnected_user") != 0) {
+
+							this.login(this.local_pseudo);
+
+						}
+
+					} else if (address.isMulticastAddress()) {
+
+						// Test SYSO au dessus du if
+
+						main_userList.addUser(received, address);
+
+					} else {
+
+						System.out.println("Received " + received + " from " + packet.getAddress().getHostAddress()
+								+ " at " + this.getTime(";", "-", "/"));
+						System.out.flush();
+
+						writeFileReceived(received, packet.getAddress());
+
+					}
+				}
+
+			} else if (this.current_state == State.CHECKINGPSEUDO) {
+
+				System.out.println("State CHECKINGPSEUDO");
+
+				long time = System.currentTimeMillis();
+
+				while (System.currentTimeMillis() - time < 2000) {
+
+					try {
+						packet = messages_Queue.poll(200, TimeUnit.MILLISECONDS);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					if (packet != null) {
+
+						String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
+
+						if (received.compareTo("pseudoNOK") == 0) {
+
+							this.isPseudoValid = false;
+
+							this.current_state = State.UNCONNECTED;
+
+						}
+
+					}
+
+				}
+
+				if (this.isPseudoValid == true) {
+					System.out.println("Pseudo is valid , state is now CONNECTED");
+					this.current_state = State.CONNECTED;
+
+				}
 
 			}
 
 		}
 
+		System.out.println("NETWORK NOK - NETWORK CONTROLLER RUN DOWN");
+
 	}
 
-	public State getState() {
+	public void setStateCheck() {
+
+		System.out.println("State is now CHECKINGPSEUDO");
+
+		this.current_state = State.CHECKINGPSEUDO;
+
+	}
+
+	public State getNetworkState() {
 
 		return this.current_state;
 
 	}
 
-	public boolean isPseudoValid(String pseudo) {
+	public boolean isConnected() {
 
-		this.sendingIsPseudoOK(pseudo);
-
-		this.current_state = State.CHECKINGPSEUDO;
-
-		long time = System.currentTimeMillis();
-
-		while (System.currentTimeMillis() - time < 4000 || this.current_state == State.CHECKINGPSEUDO) {
-			
-			//IL FAUT REGLER LE SOUCIS DE LA QUEUE PARTAGE, ON DIRAIT QUE RIEN NE RENTRE, TROUVER UNE SORTIE DE PEEK BLOQUANT POUR PAS AVOIR DE NULL EXCEPTION?
-
-			DatagramPacket packet = messages_Queue.peek();
-
-			String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
-
-			if (received.compareTo("pseudoNOK") == 0) {
-
-				this.isPseudoValid = false;
-
-				this.current_state = State.UNCONNCTED;
-
-			}
-
+		if (this.current_state == State.CONNECTED) {
+			return true;
+		} else {
+			return false;
 		}
-
-		return this.isPseudoValid;
 	}
 
 	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
@@ -157,13 +196,6 @@ public class NetworkController {
 				+ separatorDate + year;
 
 		return str_hour;
-	}
-
-	private void sendingIsPseudoOK(String pseudo) {
-
-		String msg_to_send = "isPseudoValid>" + pseudo;
-
-		this.messageSender.sendMessageMulticast(msg_to_send);
 	}
 
 	public void sendPseudoReponseNOK(InetAddress target_address) {
@@ -211,15 +243,14 @@ public class NetworkController {
 
 	}
 
-	public void startReceptionThread() {
-		threadRecvMulti.start();
-		threadRecv.start();
-	}
-
 	public boolean isNetworkOk() {
 
 		return (threadRecvMulti.isAlive() && threadRecv.isAlive());
 
+	}
+
+	public MessageSender getMessageSender() {
+		return this.messageSender;
 	}
 
 	private void writeFileReceived(String message_received, InetAddress inetAdr_sources) {
