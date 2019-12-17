@@ -21,7 +21,7 @@ import sockets.ThreadReceiverMulticast;
 public class NetworkController extends Thread {
 
 	private enum State {
-		CONNECTED, UNCONNECTED, CHECKINGPSEUDO, REBOOTING
+		CONNECTED, UNCONNECTED, CHECKINGPSEUDO
 	};
 
 	private ThreadReceiverMulticast threadRecvMulti;
@@ -60,8 +60,6 @@ public class NetworkController extends Thread {
 
 			if (this.current_state == State.CONNECTED) {
 
-				System.out.println("State CONNECTED");
-
 				try {
 
 					packet = messages_Queue.poll(200, TimeUnit.MILLISECONDS);
@@ -77,6 +75,8 @@ public class NetworkController extends Thread {
 					InetAddress address = packet.getAddress();
 
 					String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
+
+					System.out.println(received);
 
 					if (received.contains("isPseudoValid>")) {
 
@@ -134,6 +134,8 @@ public class NetworkController extends Thread {
 					if (packet != null) {
 
 						String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
+						
+						System.out.println("Received check pseudo " + received);
 
 						if (received.compareTo("pseudoNOK") == 0) {
 
@@ -153,6 +155,9 @@ public class NetworkController extends Thread {
 
 				}
 
+			} else {
+
+				// Nothing to do - State is UNCONNECTED
 			}
 
 		}
@@ -200,6 +205,8 @@ public class NetworkController extends Thread {
 
 	public void sendPseudoReponseNOK(InetAddress target_address) {
 
+		System.out.println("NOK");
+		
 		this.messageSender.sendMessageUDP("pseudoNOK", target_address);
 
 	}

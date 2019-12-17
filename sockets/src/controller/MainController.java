@@ -40,6 +40,8 @@ public class MainController {
 
 	public boolean isPseudoValid(String pseudo) {
 		
+		System.out.println("Main controller is pseudo valid");
+		
 		this.networkController.setStateCheck();
 		
 		boolean valid = true;
