@@ -2,12 +2,17 @@ package view;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import java.util.*;
 import java.net.*;
 import java.time.LocalTime;
+
+import javax.print.attribute.AttributeSet;
 import javax.swing.*;
+import javax.swing.text.*;
 import java.io.*;
 
 
@@ -15,13 +20,13 @@ public class ConversationFrame  {
 
 	JPanel panel;
 	JFrame convFrame;
-	JTextArea convMessage;
+	JTextPane convMessage;
 	JTextArea convEcriture;
-	LocalTime localTime;
 	JScrollPane scroll;
 	JScrollPane scroll2;
 	JButton enter;
 	GridBagConstraints constraints;
+	int offset =0;
 	
 	
 	public ConversationFrame(String pseudo/*,InetAddress addIp*/)
@@ -34,7 +39,23 @@ public class ConversationFrame  {
 		this.panel.setPreferredSize(new Dimension(345,500));
 		
 		addWidget();
-		//this.enter.addActionListener(this);
+		this.enter.addActionListener(new ActionListener() 
+		{
+
+			public void actionPerformed(ActionEvent e) 
+			{
+				String text = convEcriture.getText();
+		    	if (text != null)
+		    	{
+		    		System.out.println("Text="+text+"FinText");
+		    		convEcriture.setText("");
+		    		append("["+getTime(":","-","/") + "] : " +text+ "\n", Color.blue);
+		    		//convMessage.setSelectedTextColor(Color.BLUE);
+		    		//convMessage.append("["+getTime(":","-","/") + "] : " + text + "\n");
+		    	}
+			}
+				
+		});
 		/*this.conversation = new JTextArea();
 		this.conversation.setEditable(false);
 		this.conversation.setLineWrap(true); // Autoriser le retour a la ligne
@@ -56,8 +77,34 @@ public class ConversationFrame  {
 		//this.panel.add(area,BorderLayout.NORTH);*/
 		this.convFrame.getContentPane().add(panel,BorderLayout.CENTER);
 		this.convFrame.pack();
+		this.convFrame.setResizable(false);
 		this.convFrame.setVisible(true);
 	
+	}
+	
+
+	
+	public void append(String msg, Color c) {
+		   try {
+					 convMessage.getDocument().insertString(convMessage.getDocument().getLength(), msg, null);
+		   } catch(BadLocationException exc) {
+		      exc.printStackTrace();
+		   }
+		}
+	
+	
+	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
+
+		int year = LocalDateTime.now().getYear();
+		int month = LocalDateTime.now().getMonthValue();
+		int day = LocalDateTime.now().getDayOfMonth();
+		int hour = LocalDateTime.now().getHour();
+		int min = LocalDateTime.now().getMinute();
+
+		String str_hour = "" + hour + separatorHour + min + separatorHourDate + day + separatorDate + month
+				+ separatorDate + year;
+
+		return str_hour;
 	}
 	
 	void addWidget()
@@ -65,10 +112,11 @@ public class ConversationFrame  {
 		/*this.textField =  new JTextField(2);
 		this.textField.setPreferredSize(new Dimension(330,100));*/
 
-		this.convMessage = new JTextArea();
+		this.convMessage = new JTextPane();
 		this.convMessage.setEditable(false);
-		this.convMessage.setLineWrap(true); // Autoriser le retour a la ligne
-		this.convMessage.setWrapStyleWord(true);
+		
+		//this.convMessage.setLineWrap(true); // Autoriser le retour a la ligne
+		//this.convMessage.setWrapStyleWord(true);
 		this.convMessage.setPreferredSize(new Dimension(330,400));
 		
 		
@@ -124,13 +172,7 @@ public class ConversationFrame  {
 	}
 	
 	public void actionPerformed(ActionEvent event) {
-    	String text = convEcriture.getText();
-    	if (text != "")
-    	{
-    		localTime= LocalTime.now();
-    		convEcriture.setText("");
-    		convMessage.append(localTime + " : " + text + "\n");
-    	}
+    	
     	
 	}
 
@@ -174,7 +216,7 @@ public class ConversationFrame  {
 	{
 		try 
 		{
-			BufferedReader bReader = new BufferedReader(new FileReader("C:\\Users\\yimek\\Desktop\\JJ.txt"));
+			BufferedReader bReader = new BufferedReader(new FileReader("C:\\Users\\yimek\\Desktop\\" + IPpseudo +".txt"));
 			String line;
 			while ((line = bReader.readLine()) != null)
 			{
