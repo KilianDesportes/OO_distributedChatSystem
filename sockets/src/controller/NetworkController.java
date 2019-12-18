@@ -1,12 +1,15 @@
 package controller;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Enumeration;
 import java.util.concurrent.BlockingQueue;
@@ -15,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import model.UserList;
 import sockets.MessageSender;
+import sockets.ReceiverTCPController;
 import sockets.ThreadReceiverUDP;
 import sockets.ThreadReceiverMulticast;
 
@@ -33,6 +37,7 @@ public class NetworkController extends Thread {
 	private boolean isPseudoValid = true;
 	private State current_state;
 	private UserList main_userList;
+	private ReceiverTCPController threadRecvTCP;
 
 	public NetworkController(UserList mainMaincontroller_UserList) {
 
@@ -40,7 +45,10 @@ public class NetworkController extends Thread {
 		this.messages_Queue = new LinkedBlockingQueue<>();
 		this.main_userList = mainMaincontroller_UserList;
 		this.threadRecvMulti = new ThreadReceiverMulticast(this.messages_Queue);
-		this.threadRecv = new ThreadReceiverUDP(this.messages_Queue);
+		// this.threadRecv = new ThreadReceiverUDP(this.messages_Queue);
+
+		this.threadRecvTCP = new ReceiverTCPController(this.messages_Queue);
+
 		this.messageSender = new MessageSender();
 		this.local_inetAdr = this.getLocalAddress();
 
@@ -48,7 +56,8 @@ public class NetworkController extends Thread {
 
 	public void start() {
 		threadRecvMulti.start();
-		threadRecv.start();
+		// threadRecv.start();
+		threadRecvTCP.start();
 		super.start();
 	}
 
@@ -177,37 +186,6 @@ public class NetworkController extends Thread {
 
 	}
 
-	public State getNetworkState() {
-
-		return this.current_state;
-
-	}
-
-	public boolean isConnected() {
-
-		return this.current_state == State.CONNECTED;
-	}
-
-	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
-
-		int year = LocalDateTime.now().getYear();
-		int month = LocalDateTime.now().getMonthValue();
-		int day = LocalDateTime.now().getDayOfMonth();
-		int hour = LocalDateTime.now().getHour();
-		int min = LocalDateTime.now().getMinute();
-
-		String str_hour = "" + hour + separatorHour + min + separatorHourDate + day + separatorDate + month
-				+ separatorDate + year;
-
-		return str_hour;
-	}
-
-	public void sendPseudoReponseNOK(InetAddress target_address) {
-
-		this.messageSender.sendMessageUDP("pseudoNOK", target_address);
-
-	}
-
 	public void login(String pseudo) {
 
 		this.local_pseudo = pseudo;
@@ -221,56 +199,41 @@ public class NetworkController extends Thread {
 
 	}
 
-	private InetAddress getLocalAddress() {
+	public void sendMessageUDP(String message_to_send, InetAddress target_address) {
 
-		InetAddress localAdr = null;
+		this.messageSender.sendMessageUDP(message_to_send, target_address);
 
-		try {
-			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-			while (interfaces.hasMoreElements()) {
-				NetworkInterface interfaceN = (NetworkInterface) interfaces.nextElement();
-				Enumeration<InetAddress> iEnum = interfaceN.getInetAddresses();
-
-				while (iEnum.hasMoreElements()) {
-					InetAddress ia = (InetAddress) iEnum.nextElement();
-					if (!ia.isLinkLocalAddress() && !ia.isLoopbackAddress() && ia instanceof Inet4Address) {
-						localAdr = ia;
-					}
-
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return localAdr;
+		this.writeFileSend(message_to_send, target_address);
 
 	}
 
-	public boolean isNetworkOk() {
+	public void sendMessageMulticast(String message_to_send) {
 
-		return (threadRecvMulti.isAlive() && threadRecv.isAlive());
+		this.messageSender.sendMessageMulticast(message_to_send);
 
 	}
-	
-	public void sendMessageUDP(String msg_to_send , InetAddress target_address) {
-		
-		this.messageSender.sendMessageUDP(msg_to_send, target_address);
-		
-		//Il faudrait verifier que le msg est bien arrivé pour l'écrire -> tcp
-		
-		this.writeFileSend(msg_to_send, target_address);
-		
-	}
-	
-	public void sendMessageMulticast(String msg_to_send) {
-		
-		this.messageSender.sendMessageMulticast(msg_to_send);
-		
+
+	public void sendMessageTCP(Socket socket, String message_to_send, InetAddress target_address) {
+
+		this.messageSender.sendMessageTCP(socket, message_to_send, target_address);
+
+		this.writeFileSend(message_to_send, target_address);
+
 	}
 
 	public MessageSender getMessageSender() {
 		return this.messageSender;
+	}
+
+	public State getNetworkState() {
+
+		return this.current_state;
+
+	}
+
+	public boolean isConnected() {
+
+		return this.current_state == State.CONNECTED;
 	}
 
 	private void writeFileReceived(String message_received, InetAddress inetAdr_sources) {
@@ -298,7 +261,7 @@ public class NetworkController extends Thread {
 
 		}
 	}
-	
+
 	private void writeFileSend(String message_sended, InetAddress inetAdr_target) {
 
 		String file_ipAdr = inetAdr_target.getHostAddress().replace('.', '_') + ".txt";
@@ -323,6 +286,58 @@ public class NetworkController extends Thread {
 			e.printStackTrace();
 
 		}
+	}
+
+	private void sendPseudoReponseNOK(InetAddress target_address) {
+
+		this.messageSender.sendMessageUDP("pseudoNOK", target_address);
+
+	}
+
+	private boolean isNetworkOk() {
+
+		return (threadRecvMulti.isAlive() && threadRecvTCP.isAlive());
+
+	}
+
+	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
+
+		int year = LocalDateTime.now().getYear();
+		int month = LocalDateTime.now().getMonthValue();
+		int day = LocalDateTime.now().getDayOfMonth();
+		int hour = LocalDateTime.now().getHour();
+		int min = LocalDateTime.now().getMinute();
+
+		String str_hour = "" + hour + separatorHour + min + separatorHourDate + day + separatorDate + month
+				+ separatorDate + year;
+
+		return str_hour;
+	}
+
+	private InetAddress getLocalAddress() {
+
+		InetAddress localAdr = null;
+
+		try {
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements()) {
+				NetworkInterface interfaceN = (NetworkInterface) interfaces.nextElement();
+				Enumeration<InetAddress> iEnum = interfaceN.getInetAddresses();
+
+				while (iEnum.hasMoreElements()) {
+					InetAddress ia = (InetAddress) iEnum.nextElement();
+					if (!ia.isLinkLocalAddress() && !ia.isLoopbackAddress() && ia instanceof Inet4Address) {
+						localAdr = ia;
+					}
+
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return localAdr;
+
 	}
 
 }

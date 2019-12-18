@@ -1,8 +1,11 @@
 package sockets;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
 
 public class MessageSender {
 
@@ -16,6 +19,23 @@ public class MessageSender {
 			socket = new DatagramSocket();
 
 		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+
+	}
+
+	public void sendMessageTCP(Socket socket,String message_to_send, InetAddress target_address) {
+
+		try {
+
+			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			
+			System.out.println("Sending " + message_to_send + " to " + target_address + " with " + socket);
+			out.writeBytes(message_to_send);
+
+		} catch (IOException e) {
 
 			e.printStackTrace();
 

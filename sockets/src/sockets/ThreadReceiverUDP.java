@@ -25,7 +25,7 @@ public class ThreadReceiverUDP extends Thread {
 		}
 
 	}
-	
+
 	public void run() {
 
 		while (true) {
