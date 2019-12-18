@@ -76,13 +76,13 @@ public class NetworkController extends Thread {
 
 					String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
-					System.out.println(received);
-
 					if (received.contains("isPseudoValid>")) {
 
 						String pseudo_received = received.substring(14);
 
 						if (pseudo_received.compareTo(this.local_pseudo) == 0) {
+
+							System.out.println("IF");
 
 							this.sendPseudoReponseNOK(address);
 
@@ -101,8 +101,6 @@ public class NetworkController extends Thread {
 
 					} else if (address.isMulticastAddress()) {
 
-						// Test SYSO au dessus du if
-
 						main_userList.addUser(received, address);
 
 					} else {
@@ -117,6 +115,8 @@ public class NetworkController extends Thread {
 				}
 
 			} else if (this.current_state == State.CHECKINGPSEUDO) {
+
+				this.isPseudoValid = true;
 
 				System.out.println("State CHECKINGPSEUDO");
 
@@ -134,8 +134,6 @@ public class NetworkController extends Thread {
 					if (packet != null) {
 
 						String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
-						
-						System.out.println("Received check pseudo " + received);
 
 						if (received.compareTo("pseudoNOK") == 0) {
 
@@ -150,6 +148,7 @@ public class NetworkController extends Thread {
 				}
 
 				if (this.isPseudoValid == true) {
+
 					System.out.println("Pseudo is valid , state is now CONNECTED");
 					this.current_state = State.CONNECTED;
 
@@ -166,9 +165,13 @@ public class NetworkController extends Thread {
 
 	}
 
-	public void setStateCheck() {
+	public void setPseudo(String pseudo) {
 
-		System.out.println("State is now CHECKINGPSEUDO");
+		this.local_pseudo = pseudo;
+
+	}
+
+	public void setStateCheck() {
 
 		this.current_state = State.CHECKINGPSEUDO;
 
@@ -182,11 +185,7 @@ public class NetworkController extends Thread {
 
 	public boolean isConnected() {
 
-		if (this.current_state == State.CONNECTED) {
-			return true;
-		} else {
-			return false;
-		}
+		return this.current_state == State.CONNECTED;
 	}
 
 	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
@@ -205,8 +204,6 @@ public class NetworkController extends Thread {
 
 	public void sendPseudoReponseNOK(InetAddress target_address) {
 
-		System.out.println("NOK");
-		
 		this.messageSender.sendMessageUDP("pseudoNOK", target_address);
 
 	}
@@ -255,6 +252,22 @@ public class NetworkController extends Thread {
 		return (threadRecvMulti.isAlive() && threadRecv.isAlive());
 
 	}
+	
+	public void sendMessageUDP(String msg_to_send , InetAddress target_address) {
+		
+		this.messageSender.sendMessageUDP(msg_to_send, target_address);
+		
+		//Il faudrait verifier que le msg est bien arrivé pour l'écrire -> tcp
+		
+		this.writeFileSend(msg_to_send, target_address);
+		
+	}
+	
+	public void sendMessageMulticast(String msg_to_send) {
+		
+		this.messageSender.sendMessageMulticast(msg_to_send);
+		
+	}
 
 	public MessageSender getMessageSender() {
 		return this.messageSender;
@@ -285,7 +298,7 @@ public class NetworkController extends Thread {
 
 		}
 	}
-
+	
 	private void writeFileSend(String message_sended, InetAddress inetAdr_target) {
 
 		String file_ipAdr = inetAdr_target.getHostAddress().replace('.', '_') + ".txt";

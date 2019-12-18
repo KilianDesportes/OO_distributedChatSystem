@@ -52,7 +52,7 @@ public class MainController {
 		
 		long time = System.currentTimeMillis();
 
-		while (System.currentTimeMillis() - time < 2500 && !this.networkController.isConnected()) {
+		while (System.currentTimeMillis() - time < 3000 && !this.networkController.isConnected()) {
 			
 		}
 
@@ -60,6 +60,9 @@ public class MainController {
 			
 			valid = false;
 
+		} else {
+			
+			this.networkController.setPseudo(pseudo);
 		}
 
 		return valid;
