@@ -20,12 +20,14 @@ public class UserList {
 	}
 
 	public void addUser(String str_pseudo, InetAddress adr_user) {
-
+		
+		System.out.println("add user");
+		
 		if (hm_user_inet.put(str_pseudo, adr_user) == null) {
 
 			Timer tim = new Timer();
 
-			tim.schedule(new MajList(str_pseudo), 10000);
+			tim.schedule(new MajList(str_pseudo), 60000);
 
 			hm_user_timer.put(str_pseudo, tim);
 
@@ -37,7 +39,7 @@ public class UserList {
 
 			Timer tim = new Timer();
 
-			tim.schedule(new MajList(str_pseudo), 5000);
+			tim.schedule(new MajList(str_pseudo), 60000);
 
 			hm_user_timer.put(str_pseudo, tim);
 

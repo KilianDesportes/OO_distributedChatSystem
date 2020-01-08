@@ -37,6 +37,8 @@ public class NetworkController extends Thread {
 	// For TCP reception
 
 	public NetworkController(MainController maincontroller) {
+		
+		this.controller = maincontroller;
 
 		this.current_state = State.UNCONNECTED;
 		this.messages_Queue = new LinkedBlockingQueue<>();
@@ -64,8 +66,18 @@ public class NetworkController extends Thread {
 	}
 
 	public void run() {
+		
+		long start = System.currentTimeMillis();
 
 		while (this.isNetworkOk()) {
+			
+			if(System.currentTimeMillis() - start > 5000) {
+				
+				this.testUserConnected();
+				
+				start = System.currentTimeMillis();
+				
+			}
 
 			DatagramPacket packet = null;
 
@@ -97,7 +109,7 @@ public class NetworkController extends Thread {
 
 						} else {
 
-							// Pseudo OK - Nothing to do
+							this.controller.addUser(pseudo_received, address);
 						}
 
 					} else if (received.compareTo("whoIsConnected") == 0) {
@@ -121,7 +133,7 @@ public class NetworkController extends Thread {
 					} else {
 
 						System.out.println("Received " + received + " from " + packet.getAddress().getHostAddress()
-								+ " at " + this.getTime(";", "-", "/"));
+								+ " at " + this.getTime(":", " - ", "/"));
 						System.out.flush();
 
 						writeFileReceived(received, packet.getAddress());
@@ -166,6 +178,7 @@ public class NetworkController extends Thread {
 
 					System.out.println("Pseudo is valid , state is now CONNECTED");
 					this.current_state = State.CONNECTED;
+					this.testUserConnected();
 
 				}
 

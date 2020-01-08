@@ -34,9 +34,6 @@ public class ReceiverTCPController extends Thread {
 		while (true) {
 
 			try {
-				
-				// A FAIRE !! ajouter l'utilisateur dans la liste des conversations de la
-				// UserList
 
 				sock = this.server_socket.accept();
 

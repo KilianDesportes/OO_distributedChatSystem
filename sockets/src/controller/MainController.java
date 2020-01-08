@@ -22,18 +22,6 @@ public class MainController {
 
 		this.userList = new UserList(this);
 
-		try {
-
-			userList.addUser("test1", InetAddress.getByName("100.100.100.1"));
-			userList.addUser("test2", InetAddress.getByName("100.100.100.2"));
-			userList.addUser("test3", InetAddress.getByName("100.100.100.3"));
-
-		} catch (UnknownHostException e) {
-
-			e.printStackTrace();
-
-		}
-
 		this.mSender = new MessageSender();
 
 		this.networkController = new NetworkController(this);
