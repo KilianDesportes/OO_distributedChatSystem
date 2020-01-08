@@ -1,4 +1,3 @@
-package sockets;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -11,6 +10,7 @@ import view.ConversationFrame;
 public class Main {
 
 	public static void main(String[] args) {
+<<<<<<< HEAD:sockets/src/sockets/Main.java
 		
 		InetAddress localAdr = null;
 
@@ -34,6 +34,10 @@ public class Main {
 		
 		MainController mc = new MainController();
 		new ConversationFrame("Kilian",localAdr, mc);
+=======
+
+		new MainController();
+>>>>>>> a379e4cb06a536d62fd480efa65898c6ad00c2a0:sockets/src/Main.java
 	}
 
 }

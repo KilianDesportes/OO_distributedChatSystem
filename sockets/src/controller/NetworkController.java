@@ -1,9 +1,7 @@
 package controller;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
@@ -15,8 +13,6 @@ import java.util.Enumeration;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
-import model.UserList;
 import sockets.MessageSender;
 import sockets.ReceiverTCPController;
 import sockets.ThreadReceiverUDP;
@@ -36,18 +32,19 @@ public class NetworkController extends Thread {
 	private BlockingQueue<DatagramPacket> messages_Queue;
 	private boolean isPseudoValid = true;
 	private State current_state;
-	private UserList main_userList;
-	private ReceiverTCPController threadRecvTCP;
+	private MainController controller;
+	// private ReceiverTCPController threadRecvTCP;
+	// For TCP reception
 
-	public NetworkController(UserList mainMaincontroller_UserList) {
+	public NetworkController(MainController maincontroller) {
 
 		this.current_state = State.UNCONNECTED;
 		this.messages_Queue = new LinkedBlockingQueue<>();
-		this.main_userList = mainMaincontroller_UserList;
 		this.threadRecvMulti = new ThreadReceiverMulticast(this.messages_Queue);
-		// this.threadRecv = new ThreadReceiverUDP(this.messages_Queue);
+		this.threadRecv = new ThreadReceiverUDP(this.messages_Queue);
 
-		this.threadRecvTCP = new ReceiverTCPController(this.messages_Queue);
+		// this.threadRecvTCP = new ReceiverTCPController(this.messages_Queue);
+		// For TCP reception
 
 		this.messageSender = new MessageSender();
 		this.local_inetAdr = this.getLocalAddress();
@@ -55,10 +52,15 @@ public class NetworkController extends Thread {
 	}
 
 	public void start() {
+
 		threadRecvMulti.start();
-		// threadRecv.start();
-		threadRecvTCP.start();
+		threadRecv.start();
+
+		// threadRecvTCP.start();
+		// For TCP reception
+
 		super.start();
+
 	}
 
 	public void run() {
@@ -91,8 +93,6 @@ public class NetworkController extends Thread {
 
 						if (pseudo_received.compareTo(this.local_pseudo) == 0) {
 
-							System.out.println("IF");
-
 							this.sendPseudoReponseNOK(address);
 
 						} else {
@@ -108,9 +108,15 @@ public class NetworkController extends Thread {
 
 						}
 
+					} else if (received.contains("disconnect>")) {
+
+						String pseudo_received = received.substring(11);
+
+						this.controller.removeUser(pseudo_received);
+
 					} else if (address.isMulticastAddress()) {
 
-						main_userList.addUser(received, address);
+						this.controller.addUser(received, address);
 
 					} else {
 
@@ -221,6 +227,12 @@ public class NetworkController extends Thread {
 
 	}
 
+	public void disconnect() {
+
+		this.sendMessageMulticast("disconnect>" + this.local_pseudo);
+
+	}
+
 	public MessageSender getMessageSender() {
 		return this.messageSender;
 	}
@@ -296,8 +308,10 @@ public class NetworkController extends Thread {
 
 	private boolean isNetworkOk() {
 
-		return (threadRecvMulti.isAlive() && threadRecvTCP.isAlive());
+		return (threadRecvMulti.isAlive() && threadRecv.isAlive());
 
+		// return (threadRecvMulti.isAlive() && threadRecvTCP.isAlive());
+		// For TCP
 	}
 
 	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
