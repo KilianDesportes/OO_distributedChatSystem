@@ -20,6 +20,10 @@ public class ThreadReceiverMulticast extends Thread {
 		try {
 
 			sock = new MulticastSocket(8889);
+
+			// A FAIRE !!! detecter l'adresse de groupe via la bib java pour rien avoir en
+			// dur
+
 			InetAddress group = InetAddress.getByName("230.0.0.0");
 			sock.joinGroup(group);
 
@@ -42,9 +46,9 @@ public class ThreadReceiverMulticast extends Thread {
 				sock.receive(packet);
 
 				this.messages_Queue.put(packet);
-				
+
 				String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
-				
+
 				System.out.println("QUEUE PUT : " + received);
 
 			} catch (Exception e) {

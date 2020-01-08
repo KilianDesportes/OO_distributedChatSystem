@@ -24,10 +24,10 @@ import controller.MainController;
 
 public class LoginFrame extends JFrame {
 
-	JFrame jframe_mainFrame;
-	JPanel jpanel_mainPanel;
-	JButton jbutConnect;
-	JLabel jlabel_welcome;
+	private JFrame jframe_mainFrame;
+	private JPanel jpanel_mainPanel;
+	private JButton jbutConnect;
+	private JLabel jlabel_welcome;
 
 	public LoginFrame(MainController c) {
 		super("Char System Login");

@@ -42,7 +42,15 @@ public class Conversation {
 
 			while ((line = br.readLine()) != null) {
 				
-				//FORMAT netAdr_sources.getHostAddress() + ";" + this.local_inetAdr.getHostAddress() + ";" + message_received + ";" + this.getTime("/", "/", "/"));
+				/* ___FORMAT____ 
+				 * netAdr_sources.getHostAddress() + 
+				 * ";" + 
+				 * this.local_inetAdr.getHostAddress() + 
+				 * ";" + 
+				 * message_received + 
+				 * ";" + 
+				 * this.getTime("/", "/", "/"));
+				 */
 				
 				String[] split_line = line.split(";");
 				
@@ -64,8 +72,8 @@ public class Conversation {
 
 		catch (Exception e) {
 
-			System.out.println(e.toString());
-
+			e.printStackTrace();
+			
 		}
 
 	}

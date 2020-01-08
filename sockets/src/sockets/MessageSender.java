@@ -26,12 +26,12 @@ public class MessageSender {
 
 	}
 
-	public void sendMessageTCP(Socket socket,String message_to_send, InetAddress target_address) {
+	public void sendMessageTCP(Socket socket, String message_to_send, InetAddress target_address) {
 
 		try {
 
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			
+
 			System.out.println("Sending " + message_to_send + " to " + target_address + " with " + socket);
 			out.writeBytes(message_to_send);
 
