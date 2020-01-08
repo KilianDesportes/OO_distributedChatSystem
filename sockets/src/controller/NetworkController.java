@@ -262,7 +262,7 @@ public class NetworkController extends Thread {
 		}
 	}
 
-	private void writeFileSend(String message_sended, InetAddress inetAdr_target) {
+	public void writeFileSend(String message_sended, InetAddress inetAdr_target) {
 
 		String file_ipAdr = inetAdr_target.getHostAddress().replace('.', '_') + ".txt";
 
