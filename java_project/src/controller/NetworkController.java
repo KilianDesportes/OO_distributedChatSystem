@@ -1,3 +1,12 @@
+/**
+ * NetworkController class, used to control network linked process.
+ * 
+ * @author      Desportes Kilian
+ * @author      Imekraz Yanis
+ * @version 	1.0
+ * @since   	10-01-2020
+ */
+
 package controller;
 
 import java.io.File;
@@ -14,13 +23,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import sockets.MessageSender;
-import sockets.ReceiverTCPController;
 import sockets.ThreadReceiverUDP;
 import view.ConversationFrame;
 import sockets.ThreadReceiverMulticast;
 
 public class NetworkController extends Thread {
 
+	/**
+	 * Enum for every possible state of the connection
+	 */
 	private enum State {
 		CONNECTED, UNCONNECTED, CHECKINGPSEUDO
 	};
@@ -32,13 +43,13 @@ public class NetworkController extends Thread {
 	private String local_pseudo = "unconnected_user";
 	private BlockingQueue<DatagramPacket> messages_Queue;
 	private boolean isPseudoValid = true;
-	private State current_state;
+	private State current_state = State.UNCONNECTED;
 	private MainController controller;
 	// private ReceiverTCPController threadRecvTCP;
 	// For TCP reception
 
 	public NetworkController(MainController maincontroller) {
-		
+
 		this.controller = maincontroller;
 
 		this.current_state = State.UNCONNECTED;
@@ -54,6 +65,13 @@ public class NetworkController extends Thread {
 
 	}
 
+	/**
+	 * Start network control by starting both receptions threads (Multicast and UDP
+	 * ones).
+	 * 
+	 * @see ThreadReceiverUDP
+	 * @see ThreadReceiverMulticast
+	 */
 	public void start() {
 
 		threadRecvMulti.start();
@@ -66,18 +84,27 @@ public class NetworkController extends Thread {
 
 	}
 
+	/**
+	 * Thread run method to control the state of the connection and the Queue linked
+	 * to every message reception. When a message is received, reception thread will
+	 * put it into the Queue and this method will get it and treat it to make some
+	 * action in function of this message.
+	 */
+	@Override
 	public void run() {
-		
+
+		System.out.println("network controller started");
+
 		long start = System.currentTimeMillis();
 
 		while (this.isNetworkOk()) {
-			
-			if(System.currentTimeMillis() - start > 5000) {
-				
+
+			if (System.currentTimeMillis() - start > 5000) {
+
 				this.testUserConnected();
-				
+
 				start = System.currentTimeMillis();
-				
+
 			}
 
 			DatagramPacket packet = null;
@@ -100,45 +127,61 @@ public class NetworkController extends Thread {
 
 					String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
-					if (received.contains("isPseudoValid>")) {
+					if (address == this.local_inetAdr) {
 
-						String pseudo_received = received.substring(14);
+						if (received.contains("isPseudoValid>")) {
 
-						if (pseudo_received.compareTo(this.local_pseudo) == 0) {
+							String pseudo_received = received.substring(14);
 
-							this.sendPseudoReponseNOK(address);
+							if (pseudo_received.compareTo(this.local_pseudo) == 0) {
+
+								this.sendPseudoReponseNOK(address);
+
+							} else {
+
+								this.controller.addUser(pseudo_received, address);
+							}
+
+						} else if (received.compareTo("whoIsConnected") == 0) {
+
+							if (this.local_pseudo.compareTo("unconnected_user") != 0) {
+
+								this.login(this.local_pseudo);
+
+							}
+
+						} else if (received.contains("disconnect>")) {
+
+							String pseudo_received = received.substring(11);
+
+							this.controller.removeUser(pseudo_received);
+
+						} else if (received.contains("login>")
+								&& (received.substring(6).compareTo(this.local_pseudo) != 0)) {
+
+							System.out.println(received);
+
+							this.controller.addUser(received.substring(6), address);
 
 						} else {
 
-							this.controller.addUser(pseudo_received, address);
+							if (received.compareTo("pseudoNOK") != 0) {
+								System.out.println("Message received : " + received + " from "
+										+ packet.getAddress().getHostAddress() + " at "
+										+ this.getTime(":", " - ", "/"));
+
+								writeFileReceived(received, packet.getAddress());
+							} else {
+								System.out.println("PSEUDONOK received as an udp message - debugging print");
+							}
+
 						}
-
-					} else if (received.compareTo("whoIsConnected") == 0) {
-
-						if (this.local_pseudo.compareTo("unconnected_user") != 0) {
-
-							this.login(this.local_pseudo);
-
-						}
-
-					} else if (received.contains("disconnect>")) {
-
-						String pseudo_received = received.substring(11);
-
-						this.controller.removeUser(pseudo_received);
-
-					} else if (address.isMulticastAddress()) {
-
-						this.controller.addUser(received, address);
 
 					} else {
 
-						System.out.println("Received " + received + " from " + packet.getAddress().getHostAddress()
-								+ " at " + this.getTime(":", " - ", "/"));
-						System.out.flush();
+						System.out.println("Local adr is " + this.local_inetAdr);
 
-						writeFileReceived(received, packet.getAddress());
-
+						System.out.println("Adr is " + address);
 					}
 				}
 
@@ -194,6 +237,11 @@ public class NetworkController extends Thread {
 
 	}
 
+	/**
+	 * Set the local pseudo of this controller with the given pseudo.
+	 * 
+	 * @param pseudo Pseudo you want to set.
+	 */
 	public void setPseudo(String pseudo) {
 
 		this.local_pseudo = pseudo;
@@ -205,12 +253,24 @@ public class NetworkController extends Thread {
 
 	}
 
+	/**
+	 * Set the state of the connection as CHECKINGPSEUDO
+	 * 
+	 * @see State
+	 */
 	public void setStateCheck() {
 
 		this.current_state = State.CHECKINGPSEUDO;
 
 	}
 
+	/**
+	 * Method to login yourself on the network with the given pseudo via the
+	 * messageSender. Other users will be able to see you after this method.
+	 * 
+	 * @param pseudo Your pseudo
+	 * @see MessageSender
+	 */
 	public void login(String pseudo) {
 
 		this.local_pseudo = pseudo;
@@ -218,12 +278,27 @@ public class NetworkController extends Thread {
 		this.messageSender.sendMessageMulticast("login>" + this.local_pseudo);
 	}
 
+	/**
+	 * Method to test who is connected on the network via the messageSender. Other
+	 * users should respond to this request.
+	 * 
+	 * @see MessageSender
+	 */
 	public void testUserConnected() {
 
 		this.messageSender.sendMessageMulticast("whoIsConnected");
 
 	}
 
+	/**
+	 * Method to send an UDP message to a given address using MessageSender and
+	 * write this sent message to the history file linked to the address you sent
+	 * the message to.
+	 * 
+	 * @param message_to_send The message you want to send
+	 * @param target_address  IP Address of the user you want to send the message to
+	 * @see MessageSender
+	 */
 	public void sendMessageUDP(String message_to_send, InetAddress target_address) {
 
 		this.messageSender.sendMessageUDP(message_to_send, target_address);
@@ -232,12 +307,29 @@ public class NetworkController extends Thread {
 
 	}
 
+	/**
+	 * Method to send a multicast message using MessageSender.
+	 * 
+	 * @param message_to_send The message you want to send
+	 * @see MessageSender
+	 */
 	public void sendMessageMulticast(String message_to_send) {
 
 		this.messageSender.sendMessageMulticast(message_to_send);
 
 	}
 
+	/**
+	 * This method is currently not used in the application, which is UDP based.
+	 * 
+	 * Method to send an TCP message to a given address using MessageSender and
+	 * write this sent message to the history file linked to the address you sent
+	 * the message to.
+	 * 
+	 * @param message_to_send The message you want to send
+	 * @param target_address  IP Address of the user you want to send the message to
+	 * @see MessageSender
+	 */
 	public void sendMessageTCP(Socket socket, String message_to_send, InetAddress target_address) {
 
 		this.messageSender.sendMessageTCP(socket, message_to_send, target_address);
@@ -246,27 +338,61 @@ public class NetworkController extends Thread {
 
 	}
 
+	/**
+	 * Method to disconnect yourself on the network via the messageSender. Other
+	 * users will be aware of your disconnection.
+	 * 
+	 * @see MessageSender
+	 */
 	public void disconnect() {
 
 		this.sendMessageMulticast("disconnect>" + this.local_pseudo);
 
 	}
 
+	/**
+	 * Return the local MessageSender
+	 * 
+	 * @return the local MessageSender
+	 * @see MessageSender
+	 */
 	public MessageSender getMessageSender() {
 		return this.messageSender;
 	}
 
+	/**
+	 * Return the current state of the connection
+	 * 
+	 * @return The current state of the connection.
+	 * @see State
+	 */
 	public State getNetworkState() {
 
 		return this.current_state;
 
 	}
 
+	/**
+	 * Return true if the network state is CONNECTED.
+	 * 
+	 * @return True if CONNECTED, false otherwise.
+	 * @see State
+	 */
 	public boolean isConnected() {
 
 		return this.current_state == State.CONNECTED;
 	}
 
+	/**
+	 * This method is used when a message is received from another user. It write
+	 * the received message on a file named with the source address (where '.' are
+	 * replaced by '_'). This file will be used as history for the conversation with
+	 * the sender.
+	 * 
+	 * @param message_received The message you received and you will write into the
+	 *                         file.
+	 * @param inetAdr_sources  The source address of the message you received.
+	 */
 	private void writeFileReceived(String message_received, InetAddress inetAdr_sources) {
 
 		if(controller.isConversation(inetAdr_sources) != true)
@@ -288,7 +414,7 @@ public class NetworkController extends Thread {
 			PrintWriter pwriter = new PrintWriter(fwriter);
 
 			pwriter.write(inetAdr_sources.getHostAddress() + ";" + this.local_inetAdr.getHostAddress() + ";"
-					+ message_received + ";" + this.getTime("/", "/", "/"));
+					+ message_received + ";" + this.getTime("/", "/", "/") + "\n");
 			pwriter.flush();
 
 		} catch (Exception e) {
@@ -298,6 +424,16 @@ public class NetworkController extends Thread {
 		}
 	}
 
+	/**
+	 * This method is used when a message is sent to another user. It write the sent
+	 * message on a file named with the destination address (where '.' are replaced
+	 * by '_'). This file will be used as history for the conversation with the
+	 * receiver.
+	 * 
+	 * @param message_received The message you sent and you will write into the
+	 *                         file.
+	 * @param inetAdr_sources  The destination address of the message you sent.
+	 */
 	public void writeFileSend(String message_sended, InetAddress inetAdr_target) {
 
 		String file_ipAdr = inetAdr_target.getHostAddress().replace('.', '_') + ".txt";
@@ -314,7 +450,7 @@ public class NetworkController extends Thread {
 			PrintWriter pwriter = new PrintWriter(fwriter);
 
 			pwriter.write(this.local_inetAdr.getHostAddress() + ";" + inetAdr_target.getHostAddress() + ";"
-					+ message_sended + ";" + this.getTime("/", "/", "/"));
+					+ message_sended + ";" + this.getTime("/", "/", "/") + "\n");
 			pwriter.flush();
 
 		} catch (Exception e) {
@@ -324,12 +460,27 @@ public class NetworkController extends Thread {
 		}
 	}
 
+	/**
+	 * Method used to respond to a "isPseudoValid" request from another user. This
+	 * method respond that the pseudo is already taken by an user and the sender of
+	 * the request cannot choose this pseudo. It use messageSender.
+	 * 
+	 * @param target_address Request sender address.
+	 * @see MessageSender
+	 */
 	private void sendPseudoReponseNOK(InetAddress target_address) {
 
 		this.messageSender.sendMessageUDP("pseudoNOK", target_address);
 
 	}
 
+	/**
+	 * Return true if reception threads are alive, false otherwise.
+	 * 
+	 * @return  true if reception threads are alive, false otherwise.
+	 * @see ThreadReceiverMulticast
+	 * @see ThreadReceiverUDP
+	 */
 	private boolean isNetworkOk() {
 
 		return (threadRecvMulti.isAlive() && threadRecv.isAlive());
@@ -338,6 +489,16 @@ public class NetworkController extends Thread {
 		// For TCP
 	}
 
+	/**
+	 * Method used to get the local time and return a string formatted as wanted.
+	 * This method is mainly use to write hour in message view and history.
+	 * 
+	 * @param separatorHour Separator between hour numbers
+	 * @param separatorHourDate Separator between hour and date 
+	 * @param separatorDate Separator between date numbers
+	 * @return String of formated hour
+	 * @see LocalDateTime
+	 */
 	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
 
 		int year = LocalDateTime.now().getYear();
@@ -352,6 +513,12 @@ public class NetworkController extends Thread {
 		return str_hour;
 	}
 
+	/**
+	 * Method used to find the local IP address of the computer.
+	 * 
+	 * @param paramName description
+	 * @return InetAddress local IP address
+	 */
 	private InetAddress getLocalAddress() {
 
 		InetAddress localAdr = null;

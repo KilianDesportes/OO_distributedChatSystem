@@ -1,3 +1,13 @@
+/**
+ * UserButton is a view class used to create a button which look like a panel.
+ * These buttons will be used in MainFrame class, and will open 
+ * a ConversationFrame when clicked.
+ * 
+ * @author      Desportes Kilian
+ * @author      Imekraz Yanis
+ * @version 	1.0
+ * @since   	10-01-2020
+ */
 package view;
 
 import java.awt.Font;

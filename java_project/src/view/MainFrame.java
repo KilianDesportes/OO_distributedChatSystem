@@ -1,3 +1,12 @@
+/**
+ * MainFrame is a view class used to show every users connected.
+ * When a click on one user name is performed, it open a conversation with this user.
+ * 
+ * @author      Desportes Kilian
+ * @author      Imekraz Yanis
+ * @version 	1.0
+ * @since   	10-01-2020
+ */
 package view;
 
 import java.awt.BorderLayout;
@@ -28,11 +37,8 @@ public class MainFrame extends JFrame {
 
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu jmenu_options = new JMenu("Options");
-	private JMenu jmenu_help = new JMenu("Help");
-
 	private JMenuItem jmenuitem_refresh = new JMenuItem("Refresh");
 	private JMenuItem jmenuitem_disconnect = new JMenuItem("Disconnect");
-	private JMenuItem jmenuitem_quit = new JMenuItem("Quit Application");
 
 	private JPanel jpanel_users = new JPanel();
 
@@ -57,28 +63,12 @@ public class MainFrame extends JFrame {
 
 		this.refreshUI();
 
-		this.pack();
 		this.setVisible(true);
 	}
 
-	public void loadUserList(UserList ul) {
-
-		this.user_hm_array = ul.getHashMapUser();
-
-		this.user_array = new ArrayList<String>();
-
-		Iterator it = ul.getHashMapUser().entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pair = (Map.Entry) it.next();
-			String username = pair.getKey().toString();
-			System.out.println("Username added = " + username);
-			this.user_array.add(username);
-		}
-
-		this.refreshUI();
-
-	}
-
+	/**
+	 * Method used to create the menu bar of the frame.
+	 */
 	private void menuBarLoad() {
 
 		this.jmenu_options.add(jmenuitem_disconnect);
@@ -100,26 +90,40 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		this.jmenu_options.addSeparator();
-		this.jmenu_options.add(jmenuitem_quit);
-		jmenuitem_quit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-
-				System.exit(0);
-
-			}
-		});
-
-		jmenuitem_quit.setAccelerator(KeyStroke.getKeyStroke('q'));
-
 		this.menuBar.add(jmenu_options);
-
-		this.menuBar.add(jmenu_help);
 
 		this.setJMenuBar(menuBar);
 
 	}
 
+	/**
+	 * Method used to load an user list and show it into the frame. This method is
+	 * called when a change occurs on the MainController user list and it need to be
+	 * showed into the view.
+	 * 
+	 * @param ul UserList which will be loaded and showed.
+	 */
+	public void loadUserList(UserList ul) {
+
+		this.user_hm_array = ul.getHashMapUser();
+
+		this.user_array = new ArrayList<String>();
+
+		Iterator it = ul.getHashMapUser().entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			String username = pair.getKey().toString();
+			System.out.println("Username added = " + username);
+			this.user_array.add(username);
+		}
+
+		this.refreshUI();
+
+	}
+
+	/**
+	 * Method used to refresh the view with the current connected users.
+	 */
 	private void refreshUI() {
 
 		this.jpanel_users.removeAll();
