@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import sockets.MessageSender;
 import sockets.ReceiverTCPController;
 import sockets.ThreadReceiverUDP;
+import view.ConversationFrame;
 import sockets.ThreadReceiverMulticast;
 
 public class NetworkController extends Thread {
@@ -198,6 +199,11 @@ public class NetworkController extends Thread {
 		this.local_pseudo = pseudo;
 
 	}
+	public String getPseudo() {
+
+		return this.local_pseudo;
+
+	}
 
 	public void setStateCheck() {
 
@@ -209,7 +215,7 @@ public class NetworkController extends Thread {
 
 		this.local_pseudo = pseudo;
 
-		this.messageSender.sendMessageMulticast(this.local_pseudo);
+		this.messageSender.sendMessageMulticast("login>" + this.local_pseudo);
 	}
 
 	public void testUserConnected() {
@@ -263,6 +269,11 @@ public class NetworkController extends Thread {
 
 	private void writeFileReceived(String message_received, InetAddress inetAdr_sources) {
 
+		if(controller.isConversation(inetAdr_sources) != true)
+		{
+			controller.createConv(inetAdr_sources);
+		}
+		controller.msgReceived(message_received, inetAdr_sources);
 		String file_ipAdr = inetAdr_sources.getHostAddress().replace('.', '_') + ".txt";
 
 		try {

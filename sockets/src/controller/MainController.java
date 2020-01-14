@@ -2,9 +2,11 @@ package controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 
 import model.UserList;
 import sockets.MessageSender;
+import view.ConversationFrame;
 import view.LoginFrame;
 import view.MainFrame;
 
@@ -15,6 +17,7 @@ public class MainController {
 	private LoginFrame loginFrame;
 	private UserList userList;
 	private MainFrame main_frame;
+	private HashMap<InetAddress, ConversationFrame> tabConv = new HashMap<InetAddress, ConversationFrame>();
 
 	public MainController() {
 
@@ -28,7 +31,38 @@ public class MainController {
 		this.networkController.start();
 
 	}
+	
+	public void addConversation(InetAddress a, ConversationFrame b)
+	{
+		tabConv.put(a, b);
+	}
+	public void removeConversation(InetAddress add)
+	{
+		tabConv.remove(add);
+	}
 
+	public boolean isConversation(InetAddress add)
+	{
+		return tabConv.containsKey(add);
+		
+	}
+	
+	public void createConv( InetAddress inetAdd )
+	{
+		String pseudo = userList.returnPseudo(inetAdd);
+		if (pseudo != null)
+		{
+			new ConversationFrame(pseudo,inetAdd,this);
+		}
+		
+	}
+	
+	public void msgReceived(String message_received, InetAddress inetAdr_sources)
+	{
+		tabConv.get(inetAdr_sources).append(message_received);
+	}
+	
+	
 	public void addUser(String name, InetAddress adr) {
 
 		this.userList.addUser(name, adr);

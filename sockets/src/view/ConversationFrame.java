@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -42,10 +44,17 @@ public class ConversationFrame {
 		this.dest = addIp;
 		System.out.println("Ip = " + dest);
 
+
 		pseudo = this.pseudo;
 		this.convFrame = new JFrame(pseudo);
-		this.convFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.convFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.convFrame.setSize(350, 500);
+		this.convFrame.addWindowListener(new WindowAdapter(){
+			public void windowClosing (WindowEvent e)
+			{
+				mController.removeConversation(dest);
+			}
+		});
 
 		this.panel = new JPanel(new GridBagLayout());
 		this.panel.setPreferredSize(new Dimension(345, 500));
@@ -91,7 +100,7 @@ public class ConversationFrame {
 					while ((line = bReader.readLine()) != null) {
 						String[] tab = line.split(";");
 						System.out.println(tab[0] + " " + tab[1] + " " + tab[2] + " " + tab[3]);
-						if (tab[0].compareTo("Kilian") == 0) {
+						if (tab[0].compareTo(dest.toString()) == 0) {
 							append(tab[2], tab[3], Color.RED);
 						} else {
 							append(tab[2], tab[3], Color.BLUE);
@@ -141,7 +150,20 @@ public class ConversationFrame {
 			exc.printStackTrace();
 		}
 	}
+	
+	public void append(String msg) { // Receive message
 
+		try {
+			final StyledDocument doc = convMessage.getStyledDocument();
+			Style style = doc.addStyle("Style", null);
+			StyleConstants.setForeground(style, Color.RED);
+			convMessage.getDocument().insertString(convMessage.getDocument().getLength(), msg, style);
+		} catch (BadLocationException exc) {
+			exc.printStackTrace();
+		}
+	}
+
+	
 	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
 
 		int year = LocalDateTime.now().getYear();

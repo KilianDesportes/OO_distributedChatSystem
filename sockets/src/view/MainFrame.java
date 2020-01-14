@@ -143,7 +143,8 @@ public class MainFrame extends JFrame {
 
 					System.out.println("New conversation frame -> " + element + " - " + inet_user.toString());
 
-					new ConversationFrame(element, inet_user, maincontroller_app);
+					ConversationFrame c = new ConversationFrame(element, inet_user, maincontroller_app);
+					maincontroller_app.addConversation(inet_user,c);
 
 				}
 			});

@@ -18,42 +18,66 @@ public class UserList {
 		this.hm_user_inet = new HashMap<String, InetAddress>();
 		this.hm_user_timer = new HashMap<String, Timer>();
 	}
+	
+	public String returnPseudo(InetAddress inetAdd)
+	{
+		Set entrySet = hm_user_inet.entrySet();
+		 
+	    // Obtaining an iterator for the entry set
+	    Iterator it = entrySet.iterator();
+	 
+	    // Iterate through HashMap entries(Key-Value pairs)
+	    System.out.println("HashMap Key-Value Pairs : ");
+	    while(it.hasNext()){
+	    	
+	       Map.Entry me = (Map.Entry)it.next();
+	       if(me.getValue() == inetAdd)
+	       {
+	    	   return (String)me.getKey();
+	       }
+	   
+	   }
+	    return null;
+	}
 
 	public void addUser(String str_pseudo, InetAddress adr_user) {
-		
-		System.out.println("add user");
-		
-		if (hm_user_inet.put(str_pseudo, adr_user) == null) {
 
-			Timer tim = new Timer();
+		if (str_pseudo.compareTo(mainController.getNetworkController().getPseudo()) !=0)
+		{
+			System.out.println("add user");
 
-			tim.schedule(new MajList(str_pseudo), 60000);
+			if (hm_user_inet.put(str_pseudo, adr_user) == null) {
 
-			hm_user_timer.put(str_pseudo, tim);
+				Timer tim = new Timer();
 
-		} else {
-			
-			//Reset of timer if user is already on the list
+				tim.schedule(new MajList(str_pseudo), 60000);
 
-			hm_user_timer.get(str_pseudo).cancel();
+				hm_user_timer.put(str_pseudo, tim);
 
-			Timer tim = new Timer();
+			} else {
 
-			tim.schedule(new MajList(str_pseudo), 60000);
+				//Reset of timer if user is already on the list
 
-			hm_user_timer.put(str_pseudo, tim);
+				hm_user_timer.get(str_pseudo).cancel();
 
+				Timer tim = new Timer();
+
+				tim.schedule(new MajList(str_pseudo), 60000);
+
+				hm_user_timer.put(str_pseudo, tim);
+
+			}
 		}
 	}
 
 	//Print of hm_user_inet which contains pseudo and inet address
 	public void printUserList() {
-		
+
 		for (String key : hm_user_inet.keySet()) {
 			System.out.println("Name : " + key + " | Address : " + hm_user_inet.get(key));
 			System.out.flush();
 		}
-		
+
 	}
 
 	//Return the inet address of a given pseudo
@@ -69,12 +93,12 @@ public class UserList {
 	public void removeUser(String pseudo) {
 
 		if (hm_user_inet.containsKey(pseudo)) {
-			
+
 			System.out.println(pseudo + " removed from inet list");
 			hm_user_inet.remove(pseudo);
-			
+
 			this.mainController.updateUL(this);
-			
+
 		}
 
 	}
@@ -88,13 +112,13 @@ public class UserList {
 		}
 
 		public void run() {
-			
+
 			removeUser(pseudo);
 
 			hm_user_timer.remove(pseudo);
-			
+
 			System.out.println(pseudo + " removed from timer list");
-			
+
 		}
 	}
 
