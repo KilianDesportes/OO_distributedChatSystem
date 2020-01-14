@@ -1,3 +1,11 @@
+/**
+ * MessageSender used to send message on the network.
+ * 
+ * @author      Desportes Kilian
+ * @author      Imekraz Yanis
+ * @version 	1.0
+ * @since   	10-01-2020
+ */
 package sockets;
 
 import java.io.DataOutputStream;
@@ -26,6 +34,13 @@ public class MessageSender {
 
 	}
 
+	/**
+	 * Send a message with TCP protocol.
+	 * 
+	 * @param socket Socket used to send the message.
+	 * @param message_to_send Message to send.
+	 * @param target_address Destination address for this message.
+	 */
 	public void sendMessageTCP(Socket socket, String message_to_send, InetAddress target_address) {
 
 		try {
@@ -43,6 +58,12 @@ public class MessageSender {
 
 	}
 
+	/**
+	 * Send a message with UDP protocol.
+	 * 
+	 * @param message_to_send Message to send.
+	 * @param target_address Destination address for this message.
+	 */
 	public void sendMessageUDP(String message_to_send, InetAddress target_address) {
 
 		buf = message_to_send.getBytes();
@@ -63,6 +84,11 @@ public class MessageSender {
 
 	}
 
+	/**
+	 * Send a multicast message.
+	 * 
+	 * @param message Message to send.
+	 */
 	public void sendMessageMulticast(String message) {
 
 		try {

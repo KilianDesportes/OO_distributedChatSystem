@@ -1,3 +1,11 @@
+/**
+ * ConversationFrame is a view class used to show a conversation between two users.
+ * 
+ * @author      Desportes Kilian
+ * @author      Imekraz Yanis
+ * @version 	1.0
+ * @since   	10-01-2020
+ */
 package view;
 
 import java.awt.*;
@@ -6,14 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import java.util.*;
 import java.net.*;
-import java.time.LocalTime;
-
-import javax.print.attribute.Attribute;
-import javax.print.attribute.AttributeSet;
 import javax.swing.*;
 import javax.swing.text.*;
 
@@ -32,7 +33,6 @@ public class ConversationFrame {
 	private JScrollPane scroll2;
 	private JButton send;
 	private GridBagConstraints constraints;
-	// private int offset =0;
 	private MainController mController;
 	private InetAddress dest;
 
@@ -73,6 +73,10 @@ public class ConversationFrame {
 
 	}
 
+	/**
+	 * Method used to get the history (old messages) of a conversation between these
+	 * two users and show it into the frame.
+	 */
 	void getHistory() {
 
 		String file_ipAdr = this.dest.getHostAddress().replace('.', '_') + ".txt";
@@ -85,16 +89,15 @@ public class ConversationFrame {
 
 				if (!fileHistory.exists()) {
 
-					BufferedReader bReader = new BufferedReader(new FileReader(
-							fileHistory));
+					BufferedReader bReader = new BufferedReader(new FileReader(fileHistory));
 					String line;
 					while ((line = bReader.readLine()) != null) {
 						String[] tab = line.split(";");
 						System.out.println(tab[0] + " " + tab[1] + " " + tab[2] + " " + tab[3]);
 						if (tab[0].compareTo("Kilian") == 0) {
-							append(tab[2], tab[3], Color.RED);
+							messageColor(tab[2], tab[3], Color.RED);
 						} else {
-							append(tab[2], tab[3], Color.BLUE);
+							messageColor(tab[2], tab[3], Color.BLUE);
 						}
 					}
 
@@ -105,17 +108,20 @@ public class ConversationFrame {
 			catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			convFrame.setLocationRelativeTo(null);
 			convFrame.setVisible(true);
-		
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	public void append(String msg1, String date, Color c) // Load history
+	/**
+	 * Met
+	 */
+	public void messageColor(String msg1, String date, Color c) // Load history
 	{
 		String msg = date + " " + msg1 + "\n";
 		try {
@@ -128,6 +134,10 @@ public class ConversationFrame {
 		}
 	}
 
+	/**
+	 * Method used to get the history (old messages) of a conversation between these
+	 * two users and show it into the frame.
+	 */
 	public void append(String msg, Color c) { // Send message
 
 		mController.getNetworkController().sendMessageUDP(msg, dest);
@@ -142,6 +152,10 @@ public class ConversationFrame {
 		}
 	}
 
+	/**
+	 * Method used to get the history (old messages) of a conversation between these
+	 * two users and show it into the frame.
+	 */
 	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
 
 		int year = LocalDateTime.now().getYear();
@@ -156,6 +170,10 @@ public class ConversationFrame {
 		return str_hour;
 	}
 
+	/**
+	 * Method used to get the history (old messages) of a conversation between these
+	 * two users and show it into the frame.
+	 */
 	void addWidget() {
 
 		this.convMessage = new JTextPane();

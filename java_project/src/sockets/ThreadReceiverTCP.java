@@ -1,3 +1,15 @@
+/**
+ * ThreadReceiverTCP is a thread which run and which will receive every TCP packet.
+ * Once the packet is received, it will put it into the BlockingQueue which is shared with the 
+ * NetworkController. 
+ * This message will be treated in the NetworkController and not in this class, which only
+ * receive it and put it into the BlockingQueue.
+ * 
+ * @author      Desportes Kilian
+ * @author      Imekraz Yanis
+ * @version 	1.0
+ * @since   	10-01-2020
+ */
 package sockets;
 
 import java.io.BufferedReader;
@@ -27,6 +39,13 @@ public class ThreadReceiverTCP extends Thread {
 
 	}
 
+	/**
+	 * Overriding run method of Thread Class. This Method is used to receive TCP
+	 * packet constantly and put it into the BlockingQUeue. In order to get managed
+	 * by the NetworkController.
+	 * 
+	 * @see Thread
+	 */
 	public void run() {
 
 		BufferedReader in_stream = null;

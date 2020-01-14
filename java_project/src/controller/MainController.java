@@ -1,7 +1,15 @@
+/**
+ * MainController class, used to make link between data, network and view.
+ * 
+ * @author      Desportes Kilian
+ * @author      Imekraz Yanis
+ * @version 	1.0
+ * @since   	10-01-2020
+ */
+
 package controller;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import model.UserList;
 import sockets.MessageSender;
@@ -22,6 +30,12 @@ public class MainController {
 
 		this.userList = new UserList(this);
 
+		this.userList.addUser("str1", null);
+		this.userList.addUser("str2", null);
+		this.userList.addUser("str3", null);
+		this.userList.addUser("str4", null);
+		this.userList.addUser("str55555555555555", null);
+
 		this.mSender = new MessageSender();
 
 		this.networkController = new NetworkController(this);
@@ -29,6 +43,15 @@ public class MainController {
 
 	}
 
+	/**
+	 * 
+	 * Add a given user into the local UserList.
+	 * 
+	 * @param name The name of the user you want to add into the UserList.
+	 * @param adr  The IP address of the user you want to add into the UserList. of
+	 *             the destination rectangle in pixels
+	 * @see InetAddress
+	 */
 	public void addUser(String name, InetAddress adr) {
 
 		this.userList.addUser(name, adr);
@@ -37,6 +60,12 @@ public class MainController {
 
 	}
 
+	/**
+	 * 
+	 * Remove a given user from the local UserList.
+	 * 
+	 * @param name The name of the user you want to add into the UserList.
+	 */
 	public void removeUser(String name) {
 
 		this.userList.removeUser(name);
@@ -45,6 +74,12 @@ public class MainController {
 
 	}
 
+	/**
+	 * Update the UserList with the given one and update the main view with the new
+	 * UserList.
+	 * 
+	 * @param uList The new UserList you want to be used.
+	 */
 	public void updateUL(UserList uList) {
 
 		System.out.println("UserList update");
@@ -55,6 +90,9 @@ public class MainController {
 
 	}
 
+	/**
+	 * Start the main application (main view) after you get logged.
+	 */
 	public void startApplication() {
 
 		main_frame = new MainFrame(this);
@@ -62,12 +100,34 @@ public class MainController {
 		loginFrame.setVisible(false);
 	}
 
+	/**
+	 * Disconnect yourself from the application.
+	 */
+	public void disconnect() {
+
+		this.networkController.disconnect();
+
+		System.exit(0);
+
+	}
+	
+	/**
+	 * Return this local NetworkController.
+	 * 
+	 * @return The local NetworkController.
+	 * @see NetworkController
+	 */
 	public NetworkController getNetworkController() {
 
 		return this.networkController;
 
 	}
 
+	/**
+	 * Check if this pseudo is already taken by someone else using the application.
+	 * 
+	 * @param pseudo Pseudo you want to check.
+	 */
 	public boolean isPseudoValid(String pseudo) {
 
 		System.out.println("Main controller is pseudo valid");
@@ -92,18 +152,14 @@ public class MainController {
 
 		} else {
 
+			System.out.println("set pseudo");
+
 			this.networkController.setPseudo(pseudo);
 		}
 
 		return valid;
 	}
 
-	public void disconnect() {
 
-		this.networkController.disconnect();
-
-		System.exit(0);
-
-	}
 
 }
