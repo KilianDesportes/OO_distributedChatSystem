@@ -44,7 +44,7 @@ public class ConversationFrame {
 		this.dest = addIp;
 		System.out.println("Ip = " + dest);
 
-		pseudo = this.pseudo;
+		this.pseudo = pseudo;
 		this.convFrame = new JFrame();
 		this.convFrame.setTitle(pseudo);
 		this.convFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

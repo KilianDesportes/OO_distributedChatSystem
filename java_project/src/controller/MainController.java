@@ -12,6 +12,9 @@ package controller;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import model.UserList;
 import sockets.MessageSender;
 import view.ConversationFrame;
@@ -31,14 +34,12 @@ public class MainController {
 
 		this.loginFrame = new LoginFrame(this);
 
-		
 		this.userList = new UserList(this);
 
 		this.mSender = new MessageSender();
 
 		this.networkController = new NetworkController(this);
 		this.networkController.start();
-		
 
 	}
 
@@ -50,38 +51,37 @@ public class MainController {
 		tabConv.remove(add);
 	}
 
-	public boolean isConversation(InetAddress add)
-	{
+	public boolean isConversation(InetAddress add) {
 		return tabConv.containsKey(add);
 
 	}
 
 	public void createConv(InetAddress inetAdd) {
 		String pseudo = userList.returnPseudo(inetAdd);
-		
+
 		if (pseudo != null) {
 			System.out.println("Pseudo is not null : " + pseudo);
 			ConversationFrame c = new ConversationFrame(pseudo, inetAdd, this);
 			this.tabConv.put(inetAdd, c);
 
-		}else {
+		} else {
 			System.out.println("Pseudo is null : " + pseudo);
 
 		}
 
 	}
-	
+
 	public HashMap<InetAddress, ConversationFrame> getConvList() {
 		return this.tabConv;
 	}
 
 	public void msgReceived(String message_received, InetAddress inetAdr_sources) {
-		
+
 		System.out.println("TabConv : " + this.tabConv);
 		System.out.println("inet_src : " + inetAdr_sources);
 		System.out.println("msg : " + message_received);
 		tabConv.get(inetAdr_sources).append(message_received);
-		
+
 	}
 
 	/**
@@ -95,12 +95,26 @@ public class MainController {
 	 */
 	public void addUser(String name, InetAddress adr) {
 
-		this.userList.addUser(name, adr);
-		
-		System.out.println("m "+this.main_frame);
-		
-		System.out.println("u "+this.userList);
+		if (this.userList.getHashMapUser().containsValue(adr)) {
 
+			Iterator it = this.userList.getHashMapUser().entrySet().iterator();
+
+			while (it.hasNext()) {
+
+				Map.Entry pair = (Map.Entry) it.next();
+
+				if (pair.getValue().equals(adr)) {
+					String username = pair.getKey().toString();
+					this.userList.replaceUser(username, name);
+
+				}
+
+			}
+		} else {
+
+			this.userList.addUser(name, adr);
+
+		}
 
 		this.main_frame.loadUserList(this.userList);
 

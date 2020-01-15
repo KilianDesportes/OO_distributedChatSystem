@@ -119,7 +119,12 @@ public class UserList {
 		return hm_user_timer;
 	}
 	
-	
+	public void replaceUser(String old_pseudo ,String new_pseudo) {
+		
+		InetAddress adr = this.hm_user_inet.get(old_pseudo);
+		this.hm_user_inet.remove(old_pseudo);
+		this.hm_user_inet.put(new_pseudo, adr);
+	}
 	
 	public String returnPseudo(InetAddress inetAdd)
 	{
