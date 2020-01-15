@@ -10,7 +10,10 @@
 package controller;
 
 import java.net.InetAddress;
+<<<<<<< HEAD
 import java.net.UnknownHostException;
+=======
+>>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 import java.util.HashMap;
 import model.UserList;
 import sockets.MessageSender;
@@ -34,8 +37,11 @@ public class MainController {
 		
 		this.userList = new UserList(this);
 
+<<<<<<< HEAD
 		
 
+=======
+>>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 		this.mSender = new MessageSender();
 
 		this.networkController = new NetworkController(this);
@@ -43,38 +49,45 @@ public class MainController {
 		
 
 	}
-	
-	public void addConversation(InetAddress a, ConversationFrame b)
-	{
+
+	public void addConversation(InetAddress a, ConversationFrame b) {
 		tabConv.put(a, b);
 	}
-	public void removeConversation(InetAddress add)
-	{
+
+	public void removeConversation(InetAddress add) {
 		tabConv.remove(add);
 	}
 
+<<<<<<< HEAD
 	public boolean isConversation(InetAddress add)
 	{
+=======
+	public boolean isConversation(InetAddress add) {
+>>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 		return tabConv.containsKey(add);
-		
+
 	}
-	
-	public void createConv( InetAddress inetAdd )
-	{
+
+	public void createConv(InetAddress inetAdd) {
 		String pseudo = userList.returnPseudo(inetAdd);
-		if (pseudo != null)
-		{
-			new ConversationFrame(pseudo,inetAdd,this);
+		if (pseudo != null) {
+			new ConversationFrame(pseudo, inetAdd, this);
 		}
-		
+
 	}
-	
-	public void msgReceived(String message_received, InetAddress inetAdr_sources)
-	{
+
+	public void msgReceived(String message_received, InetAddress inetAdr_sources) {
+		System.out.println("TabConv : " + this.tabConv);
+		System.out.println("inet_src : " + inetAdr_sources);
+		System.out.println("msg : " + message_received);
 		tabConv.get(inetAdr_sources).append(message_received);
 	}
+<<<<<<< HEAD
 	
 	
+=======
+
+>>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 	/**
 	 * 
 	 * Add a given user into the local UserList.
@@ -132,7 +145,8 @@ public class MainController {
 	 */
 	public void startApplication() {
 
-		main_frame = new MainFrame(this);
+		this.main_frame = new MainFrame(this);
+		this.networkController.networkConnected();
 		this.main_frame.loadUserList(this.userList);
 		loginFrame.setVisible(false);
 	}
@@ -147,7 +161,7 @@ public class MainController {
 		System.exit(0);
 
 	}
-	
+
 	/**
 	 * Return this local NetworkController.
 	 * 
@@ -167,6 +181,11 @@ public class MainController {
 	 */
 	public boolean isPseudoValid(String pseudo) {
 
+		if (pseudo.length() < 2 || (pseudo.compareTo(" ") == 0) || (pseudo.compareTo("  ") == 0)) {
+			System.out.println("Pseudo is too short or void");
+			return false;
+		}
+
 		System.out.println("Main controller is pseudo valid");
 
 		this.networkController.setStateCheck();
@@ -183,7 +202,7 @@ public class MainController {
 
 		}
 
-		if (!this.networkController.isConnected()) {
+		if (!this.networkController.isPseudoOK()) {
 
 			valid = false;
 
@@ -192,11 +211,11 @@ public class MainController {
 			System.out.println("set pseudo");
 
 			this.networkController.setPseudo(pseudo);
+
+			this.startApplication();
 		}
 
 		return valid;
 	}
-
-
 
 }

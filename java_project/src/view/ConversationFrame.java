@@ -44,14 +44,13 @@ public class ConversationFrame {
 		this.dest = addIp;
 		System.out.println("Ip = " + dest);
 
-
 		pseudo = this.pseudo;
-		this.convFrame = new JFrame(pseudo);
+		this.convFrame = new JFrame();
+		this.convFrame.setTitle(pseudo);
 		this.convFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.convFrame.setSize(350, 500);
-		this.convFrame.addWindowListener(new WindowAdapter(){
-			public void windowClosing (WindowEvent e)
-			{
+		this.convFrame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
 				mController.removeConversation(dest);
 			}
 		});
@@ -87,9 +86,16 @@ public class ConversationFrame {
 	 * two users and show it into the frame.
 	 */
 	void getHistory() {
+<<<<<<< HEAD
 
 		new File ("HISTORY").mkdirs();
 		String file_ipAdr = "HISTORY" +  File.separator + this.dest.getHostAddress().replace('.', '_') + ".txt";
+=======
+		
+		new File("HISTORY").mkdirs();
+		
+		String file_ipAdr = "HISTORY" + File.separator + this.dest.getHostAddress().replace('.', '_') + ".txt";
+>>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 
 		try {
 
@@ -104,11 +110,16 @@ public class ConversationFrame {
 					while ((line = bReader.readLine()) != null) {
 						String[] tab = line.split(";");
 						System.out.println(tab[0] + " " + tab[1] + " " + tab[2] + " " + tab[3]);
+<<<<<<< HEAD
 						System.out.println("dest = " + dest + " tab[0] =  " + tab[0]);
 
 						if (tab[0].compareTo(dest.toString()) == 0) {
 							messageColor(tab[2], tab[2], Color.RED);
 
+=======
+						if (tab[0].compareTo(dest.toString()) == 0) {
+							messageColor(tab[2], tab[3], Color.RED);
+>>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 						} else {
 							messageColor(tab[2], tab[2], Color.BLUE);
 						}
@@ -129,7 +140,9 @@ public class ConversationFrame {
 			convFrame.setLocationRelativeTo(null);
 			convFrame.setVisible(true);
 
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			e.printStackTrace();
 		}
 
@@ -168,7 +181,7 @@ public class ConversationFrame {
 			exc.printStackTrace();
 		}
 	}
-	
+
 	public void append(String msg) { // Receive message
 
 		try {
@@ -181,7 +194,10 @@ public class ConversationFrame {
 		}
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 	/**
 	 * Method used to get the history (old messages) of a conversation between these
 	 * two users and show it into the frame.

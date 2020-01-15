@@ -59,7 +59,7 @@ public class ThreadReceiverUDP extends Thread {
 
 				String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
-				System.out.println("QUEUE PUT : " + received);
+				System.out.println("QUEUE PUT UDP : " + received);
 
 			} catch (Exception e) {
 

@@ -110,11 +110,19 @@ public class MainFrame extends JFrame {
 		this.user_array = new ArrayList<String>();
 
 		Iterator it = ul.getHashMapUser().entrySet().iterator();
+
 		while (it.hasNext()) {
+			
 			Map.Entry pair = (Map.Entry) it.next();
+			
+			System.out.println("Pair : " + pair.getKey() + " : " + pair.getValue());
+			
 			String username = pair.getKey().toString();
+			
 			System.out.println("Username added = " + username);
+			
 			this.user_array.add(username);
+			
 		}
 
 		this.refreshUI();
@@ -146,8 +154,9 @@ public class MainFrame extends JFrame {
 					InetAddress inet_user = user_hm_array.get(element);
 
 					System.out.println("New conversation frame -> " + element + " - " + inet_user.toString());
-
+					
 					ConversationFrame c = new ConversationFrame(element, inet_user, maincontroller_app);
+					
 					maincontroller_app.addConversation(inet_user,c);
 
 				}

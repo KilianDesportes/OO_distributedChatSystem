@@ -68,7 +68,7 @@ public class ThreadReceiverMulticast extends Thread {
 
 				String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
-				System.out.println("QUEUE PUT : " + received);
+				System.out.println("QUEUE PUT Multicast : " + received);
 
 			} catch (Exception e) {
 
