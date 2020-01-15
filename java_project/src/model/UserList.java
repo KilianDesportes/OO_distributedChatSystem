@@ -32,6 +32,28 @@ public class UserList {
 		this.hm_user_timer = new HashMap<String, Timer>();
 	}
 
+	
+	public String returnPseudo(InetAddress inetAdd)
+	{
+		Set entrySet = hm_user_inet.entrySet();
+		 
+	    // Obtaining an iterator for the entry set
+	    Iterator it = entrySet.iterator();
+	 
+	    // Iterate through HashMap entries(Key-Value pairs)
+	    System.out.println("HashMap Key-Value Pairs : ");
+	    while(it.hasNext()){
+	    	
+	       Map.Entry me = (Map.Entry)it.next();
+	       if(me.getValue() == inetAdd)
+	       {
+	    	   return (String)me.getKey();
+	       }
+	   
+	   }
+	    return null;
+	}
+	
 	/**
 	 * Add an user to the HashMap containing IP address.
 	 * 
@@ -40,7 +62,7 @@ public class UserList {
 	 */
 	public void addUser(String str_pseudo, InetAddress adr_user) {
 
-		System.out.println("add user");
+		System.out.println("Adding user " + str_pseudo + " at address " + adr_user);
 
 		if (hm_user_inet.put(str_pseudo, adr_user) != null) {
 
