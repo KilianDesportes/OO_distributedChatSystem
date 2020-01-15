@@ -24,10 +24,11 @@
 		</copy>
 	</target>
 	<target name="clean">
+		<delete dir="BUILD"/>
+		<delete dir="ChatSystem_App"/>
+		<delete dir="HISTORY"/>
 		<delete includeEmptyDirs="true">
 			<fileset dir="." includes="**/*.class" />
-			<fileset dir="." includes="**/*.war" />
-			<fileset dir="./BUILD" includes="**/*.class" />
 		</delete>
 	</target>
 	<target depends="clean" name="cleanall" />
