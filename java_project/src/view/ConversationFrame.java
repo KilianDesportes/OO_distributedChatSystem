@@ -88,7 +88,8 @@ public class ConversationFrame {
 	 */
 	void getHistory() {
 
-		String file_ipAdr = this.dest.getHostAddress().replace('.', '_') + ".txt";
+		new File ("HISTORY").mkdirs();
+		String file_ipAdr = "HISTORY" +  File.separator + this.dest.getHostAddress().replace('.', '_') + ".txt";
 
 		try {
 
@@ -96,26 +97,28 @@ public class ConversationFrame {
 
 			try {
 
-				if (!fileHistory.exists()) {
+				if (fileHistory.exists()) {
 
 					BufferedReader bReader = new BufferedReader(new FileReader(fileHistory));
 					String line;
 					while ((line = bReader.readLine()) != null) {
 						String[] tab = line.split(";");
 						System.out.println(tab[0] + " " + tab[1] + " " + tab[2] + " " + tab[3]);
-<<<<<<< HEAD:sockets/src/view/ConversationFrame.java
+						System.out.println("dest = " + dest + " tab[0] =  " + tab[0]);
+
 						if (tab[0].compareTo(dest.toString()) == 0) {
-							append(tab[2], tab[3], Color.RED);
-=======
-						if (tab[0].compareTo("Kilian") == 0) {
-							messageColor(tab[2], tab[3], Color.RED);
->>>>>>> d785e5bceed1169412b1eb30d3cb796da901840f:java_project/src/view/ConversationFrame.java
+							messageColor(tab[2], tab[2], Color.RED);
+
 						} else {
-							messageColor(tab[2], tab[3], Color.BLUE);
+							messageColor(tab[2], tab[2], Color.BLUE);
 						}
 					}
 
 					bReader.close();
+				}
+				else 
+				{ 
+					//PrintWriter writer = new PrintWriter(, UTF-8);
 				}
 			}
 
@@ -178,14 +181,11 @@ public class ConversationFrame {
 		}
 	}
 
-<<<<<<< HEAD:sockets/src/view/ConversationFrame.java
-	
-=======
+
 	/**
 	 * Method used to get the history (old messages) of a conversation between these
 	 * two users and show it into the frame.
 	 */
->>>>>>> d785e5bceed1169412b1eb30d3cb796da901840f:java_project/src/view/ConversationFrame.java
 	private String getTime(String separatorHour, String separatorHourDate, String separatorDate) {
 
 		int year = LocalDateTime.now().getYear();

@@ -127,7 +127,7 @@ public class NetworkController extends Thread {
 
 					String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
-					if (address == this.local_inetAdr) {
+					if (!address.equals(this.local_inetAdr)) {
 
 						if (received.contains("isPseudoValid>")) {
 
@@ -159,7 +159,12 @@ public class NetworkController extends Thread {
 						} else if (received.contains("login>")
 								&& (received.substring(6).compareTo(this.local_pseudo) != 0)) {
 
-							System.out.println(received);
+							System.out.println("r "+received);
+							
+							System.out.println("c "+this.controller);
+							
+							System.out.println("a "+address);
+
 
 							this.controller.addUser(received.substring(6), address);
 
@@ -222,7 +227,7 @@ public class NetworkController extends Thread {
 
 					System.out.println("Pseudo is valid , state is now CONNECTED");
 					this.current_state = State.CONNECTED;
-					this.testUserConnected();
+					
 
 				}
 
@@ -400,7 +405,8 @@ public class NetworkController extends Thread {
 			controller.createConv(inetAdr_sources);
 		}
 		controller.msgReceived(message_received, inetAdr_sources);
-		String file_ipAdr = inetAdr_sources.getHostAddress().replace('.', '_') + ".txt";
+		new File ("HISTORY").mkdirs();
+		String file_ipAdr = "HISTORY" + File.separator +  inetAdr_sources.getHostAddress().replace('.', '_') + ".txt";
 
 		try {
 
@@ -414,8 +420,10 @@ public class NetworkController extends Thread {
 			PrintWriter pwriter = new PrintWriter(fwriter);
 
 			pwriter.write(inetAdr_sources.getHostAddress() + ";" + this.local_inetAdr.getHostAddress() + ";"
-					+ message_received + ";" + this.getTime("/", "/", "/") + "\n");
+					+ message_received + ";" + this.getTime(":", "-", "/") + "\n");
 			pwriter.flush();
+			
+			pwriter.close();
 
 		} catch (Exception e) {
 
@@ -436,7 +444,8 @@ public class NetworkController extends Thread {
 	 */
 	public void writeFileSend(String message_sended, InetAddress inetAdr_target) {
 
-		String file_ipAdr = inetAdr_target.getHostAddress().replace('.', '_') + ".txt";
+		new File ("HISTORY").mkdirs();
+		String file_ipAdr = "HISTORY" + File.separator + inetAdr_target.getHostAddress().replace('.', '_') + ".txt";
 
 		try {
 
@@ -450,9 +459,11 @@ public class NetworkController extends Thread {
 			PrintWriter pwriter = new PrintWriter(fwriter);
 
 			pwriter.write(this.local_inetAdr.getHostAddress() + ";" + inetAdr_target.getHostAddress() + ";"
-					+ message_sended + ";" + this.getTime("/", "/", "/") + "\n");
+					+ message_sended + ";" + this.getTime(":", "-", "/") + "\n");
 			pwriter.flush();
-
+			
+			pwriter.close();
+			
 		} catch (Exception e) {
 
 			e.printStackTrace();

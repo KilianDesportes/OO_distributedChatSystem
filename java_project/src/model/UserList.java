@@ -116,4 +116,27 @@ public class UserList {
 	public HashMap<String, Timer> getHashMapTimer() {
 		return hm_user_timer;
 	}
+	
+	
+	
+	public String returnPseudo(InetAddress inetAdd)
+	{
+		Set entrySet = hm_user_inet.entrySet();
+		 
+	    // Obtaining an iterator for the entry set
+	    Iterator it = entrySet.iterator();
+	 
+	    // Iterate through HashMap entries(Key-Value pairs)
+	    System.out.println("HashMap Key-Value Pairs : ");
+	    while(it.hasNext()){
+	    	
+	       Map.Entry me = (Map.Entry)it.next();
+	       if(me.getValue() == inetAdd)
+	       {
+	    	   return (String)me.getKey();
+	       }
+	   
+	   }
+	    return null;
+	}
 }

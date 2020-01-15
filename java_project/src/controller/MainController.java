@@ -10,12 +10,8 @@
 package controller;
 
 import java.net.InetAddress;
-<<<<<<< HEAD:sockets/src/controller/MainController.java
 import java.net.UnknownHostException;
 import java.util.HashMap;
-=======
->>>>>>> d785e5bceed1169412b1eb30d3cb796da901840f:java_project/src/controller/MainController.java
-
 import model.UserList;
 import sockets.MessageSender;
 import view.ConversationFrame;
@@ -35,18 +31,16 @@ public class MainController {
 
 		this.loginFrame = new LoginFrame(this);
 
+		
 		this.userList = new UserList(this);
 
-		this.userList.addUser("str1", null);
-		this.userList.addUser("str2", null);
-		this.userList.addUser("str3", null);
-		this.userList.addUser("str4", null);
-		this.userList.addUser("str55555555555555", null);
+		
 
 		this.mSender = new MessageSender();
 
 		this.networkController = new NetworkController(this);
 		this.networkController.start();
+		
 
 	}
 	
@@ -59,7 +53,6 @@ public class MainController {
 		tabConv.remove(add);
 	}
 
-<<<<<<< HEAD:sockets/src/controller/MainController.java
 	public boolean isConversation(InetAddress add)
 	{
 		return tabConv.containsKey(add);
@@ -82,7 +75,6 @@ public class MainController {
 	}
 	
 	
-=======
 	/**
 	 * 
 	 * Add a given user into the local UserList.
@@ -92,10 +84,14 @@ public class MainController {
 	 *             the destination rectangle in pixels
 	 * @see InetAddress
 	 */
->>>>>>> d785e5bceed1169412b1eb30d3cb796da901840f:java_project/src/controller/MainController.java
 	public void addUser(String name, InetAddress adr) {
 
 		this.userList.addUser(name, adr);
+		
+		System.out.println("m "+this.main_frame);
+		
+		System.out.println("u "+this.userList);
+
 
 		this.main_frame.loadUserList(this.userList);
 
