@@ -127,18 +127,12 @@ public class NetworkController extends Thread {
 					InetAddress address = packet.getAddress();
 
 					String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
-<<<<<<< HEAD
-
-					if (!address.equals(this.local_inetAdr)) {
-=======
-					
+		
 					System.out.println("\n_____Message received : " + received + "_____");
 					
 					if (!address.equals(this.local_inetAdr)) {
 						
 						System.out.println("Adresse différente");
-						
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 
 						if (received.contains("isPseudoValid>")) {
 
@@ -170,18 +164,9 @@ public class NetworkController extends Thread {
 						} else if (received.contains("login>")
 								&& (received.substring(6).compareTo(this.local_pseudo) != 0)) {
 
-<<<<<<< HEAD
-							System.out.println("r "+received);
-							
-							System.out.println("c "+this.controller);
-							
-							System.out.println("a "+address);
-
-=======
 							String pseudoRecv = received.substring(6);
 							
 							System.out.println(pseudoRecv + " is logged in, we add him in list with address " + address);
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 
 							this.controller.addUser(pseudoRecv, address);
 
@@ -247,14 +232,8 @@ public class NetworkController extends Thread {
 
 				if (this.isPseudoValid == true) {
 
-<<<<<<< HEAD
-					System.out.println("Pseudo is valid , state is now CONNECTED");
-					this.current_state = State.CONNECTED;
-					
-=======
 					System.out.println("Pseudo is valid , state is now PSEUDOOK");
 					this.current_state = State.PSEUDOOK;
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 
 				}
 
@@ -439,18 +418,14 @@ public class NetworkController extends Thread {
 
 		if(controller.isConversation(inetAdr_sources) != true)
 		{
+			System.out.println("New conv with adr " + inetAdr_sources);
 			controller.createConv(inetAdr_sources);
 		}
 		controller.msgReceived(message_received, inetAdr_sources);
-<<<<<<< HEAD
-		new File ("HISTORY").mkdirs();
-		String file_ipAdr = "HISTORY" + File.separator +  inetAdr_sources.getHostAddress().replace('.', '_') + ".txt";
-=======
 		
 		new File("/HISTORY").mkdirs();
 		
 		String file_ipAdr = "HISTORY" + File.separator + inetAdr_sources.getHostAddress().replace('.', '_') + ".txt";
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 
 		try {
 
@@ -464,11 +439,7 @@ public class NetworkController extends Thread {
 			PrintWriter pwriter = new PrintWriter(fwriter);
 
 			pwriter.write(inetAdr_sources.getHostAddress() + ";" + this.local_inetAdr.getHostAddress() + ";"
-<<<<<<< HEAD
-					+ message_received + ";" + this.getTime(":", "-", "/") + "\n");
-=======
 					 + this.getTime(":", ":", ":") + ";" + message_received);
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 			pwriter.flush();
 			
 			pwriter.close();
@@ -491,14 +462,9 @@ public class NetworkController extends Thread {
 	 * @param inetAdr_sources  The destination address of the message you sent.
 	 */
 	public void writeFileSend(String message_sended, InetAddress inetAdr_target) {
-<<<<<<< HEAD
-
-		new File ("HISTORY").mkdirs();
-=======
 		
 		new File("HISTORY").mkdirs();
 		
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 		String file_ipAdr = "HISTORY" + File.separator + inetAdr_target.getHostAddress().replace('.', '_') + ".txt";
 
 		try {
@@ -513,12 +479,8 @@ public class NetworkController extends Thread {
 			PrintWriter pwriter = new PrintWriter(fwriter);
 
 			pwriter.write(this.local_inetAdr.getHostAddress() + ";" + inetAdr_target.getHostAddress() + ";"
-<<<<<<< HEAD
-					+ message_sended + ";" + this.getTime(":", "-", "/") + "\n");
-=======
 					 + this.getTime(":", ":", ":") + ";" + message_sended);
 			
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 			pwriter.flush();
 			
 			pwriter.close();

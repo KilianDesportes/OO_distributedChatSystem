@@ -59,14 +59,6 @@ public class LoginFrame extends JFrame {
 
 					JOptionPane.showMessageDialog(null, "Pseudo non correct", "Attention", JOptionPane.WARNING_MESSAGE);
 
-<<<<<<< HEAD
-				} else {
-					System.out.println("StartAppl");
-
-					c.startApplication();
-
-=======
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 				}
 			}
 		});

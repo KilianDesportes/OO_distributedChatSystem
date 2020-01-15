@@ -86,16 +86,10 @@ public class ConversationFrame {
 	 * two users and show it into the frame.
 	 */
 	void getHistory() {
-<<<<<<< HEAD
-
-		new File ("HISTORY").mkdirs();
-		String file_ipAdr = "HISTORY" +  File.separator + this.dest.getHostAddress().replace('.', '_') + ".txt";
-=======
 		
 		new File("HISTORY").mkdirs();
 		
 		String file_ipAdr = "HISTORY" + File.separator + this.dest.getHostAddress().replace('.', '_') + ".txt";
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 
 		try {
 
@@ -110,26 +104,14 @@ public class ConversationFrame {
 					while ((line = bReader.readLine()) != null) {
 						String[] tab = line.split(";");
 						System.out.println(tab[0] + " " + tab[1] + " " + tab[2] + " " + tab[3]);
-<<<<<<< HEAD
-						System.out.println("dest = " + dest + " tab[0] =  " + tab[0]);
-
-						if (tab[0].compareTo(dest.toString()) == 0) {
-							messageColor(tab[2], tab[2], Color.RED);
-
-=======
-						if (tab[0].compareTo(dest.toString()) == 0) {
-							messageColor(tab[2], tab[3], Color.RED);
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
+						if (tab[0].toString().compareTo(dest.getHostAddress().toString()) == 0) {
+							messageColor(tab[3], Color.RED);
 						} else {
-							messageColor(tab[2], tab[2], Color.BLUE);
+							messageColor(tab[3], Color.BLUE);
 						}
 					}
 
 					bReader.close();
-				}
-				else 
-				{ 
-					//PrintWriter writer = new PrintWriter(, UTF-8);
 				}
 			}
 
@@ -151,9 +133,9 @@ public class ConversationFrame {
 	/**
 	 * Met
 	 */
-	public void messageColor(String msg1, String date, Color c) // Load history
+	public void messageColor(String msg1, Color c) // Load history
 	{
-		String msg = date + " " + msg1 + "\n";
+		String msg = msg1 + "\n";
 		try {
 			final StyledDocument doc = convMessage.getStyledDocument();
 			Style style = doc.addStyle("Style", null);
@@ -171,7 +153,6 @@ public class ConversationFrame {
 	public void append(String msg, Color c) { // Send message
 
 		mController.getNetworkController().sendMessageUDP(msg, dest);
-		mController.getNetworkController().writeFileSend(msg, dest);
 		try {
 			final StyledDocument doc = convMessage.getStyledDocument();
 			Style style = doc.addStyle("Style", null);
@@ -194,10 +175,7 @@ public class ConversationFrame {
 		}
 	}
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 	/**
 	 * Method used to get the history (old messages) of a conversation between these
 	 * two users and show it into the frame.

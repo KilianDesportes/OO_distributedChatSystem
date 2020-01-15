@@ -10,10 +10,7 @@
 package controller;
 
 import java.net.InetAddress;
-<<<<<<< HEAD
 import java.net.UnknownHostException;
-=======
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 import java.util.HashMap;
 import model.UserList;
 import sockets.MessageSender;
@@ -37,11 +34,6 @@ public class MainController {
 		
 		this.userList = new UserList(this);
 
-<<<<<<< HEAD
-		
-
-=======
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 		this.mSender = new MessageSender();
 
 		this.networkController = new NetworkController(this);
@@ -58,36 +50,40 @@ public class MainController {
 		tabConv.remove(add);
 	}
 
-<<<<<<< HEAD
 	public boolean isConversation(InetAddress add)
 	{
-=======
-	public boolean isConversation(InetAddress add) {
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 		return tabConv.containsKey(add);
 
 	}
 
 	public void createConv(InetAddress inetAdd) {
 		String pseudo = userList.returnPseudo(inetAdd);
+		
 		if (pseudo != null) {
-			new ConversationFrame(pseudo, inetAdd, this);
+			System.out.println("Pseudo is not null : " + pseudo);
+			ConversationFrame c = new ConversationFrame(pseudo, inetAdd, this);
+			this.tabConv.put(inetAdd, c);
+
+		}else {
+			System.out.println("Pseudo is null : " + pseudo);
+
 		}
 
 	}
+	
+	public HashMap<InetAddress, ConversationFrame> getConvList() {
+		return this.tabConv;
+	}
 
 	public void msgReceived(String message_received, InetAddress inetAdr_sources) {
+		
 		System.out.println("TabConv : " + this.tabConv);
 		System.out.println("inet_src : " + inetAdr_sources);
 		System.out.println("msg : " + message_received);
 		tabConv.get(inetAdr_sources).append(message_received);
+		
 	}
-<<<<<<< HEAD
-	
-	
-=======
 
->>>>>>> 8573b8ed4799c7f4666e89f130f8f3cf363fd948
 	/**
 	 * 
 	 * Add a given user into the local UserList.
