@@ -68,7 +68,7 @@ public class ConversationFrame {
 				System.out.println("Text= [" + text + "]");
 				if (text.compareTo("") != 0) {
 					convEcriture.setText("");
-					append("[" + getTime(":", "-", "/") + "] : " + text + "\n", Color.blue);
+					appendSend("[" + getTime(":", "-", "/") + "] : " + text + "\n");
 				}
 			}
 		});
@@ -86,9 +86,9 @@ public class ConversationFrame {
 	 * two users and show it into the frame.
 	 */
 	void getHistory() {
-		
+
 		new File("HISTORY").mkdirs();
-		
+
 		String file_ipAdr = "HISTORY" + File.separator + this.dest.getHostAddress().replace('.', '_') + ".txt";
 
 		try {
@@ -147,23 +147,29 @@ public class ConversationFrame {
 	}
 
 	/**
-	 * Method used to get the history (old messages) of a conversation between these
-	 * two users and show it into the frame.
+	 * Method used to show a sent message to the conversation frame
+	 * 
+	 * @param msg Message to be shown
 	 */
-	public void append(String msg, Color c) { // Send message
+	public void appendSend(String msg) {
 
 		mController.getNetworkController().sendMessageUDP(msg, dest);
 		try {
 			final StyledDocument doc = convMessage.getStyledDocument();
 			Style style = doc.addStyle("Style", null);
-			StyleConstants.setForeground(style, c);
+			StyleConstants.setForeground(style, Color.BLUE);
 			convMessage.getDocument().insertString(convMessage.getDocument().getLength(), msg, style);
 		} catch (BadLocationException exc) {
 			exc.printStackTrace();
 		}
 	}
 
-	public void append(String msg) { // Receive message
+	/**
+	 * Method used to show a received message to the conversation frame
+	 * 
+	 * @param msg Message to be shown
+	 */
+	public void appendRecv(String msg) {
 
 		try {
 			final StyledDocument doc = convMessage.getStyledDocument();
@@ -174,7 +180,6 @@ public class ConversationFrame {
 			exc.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * Method used to get the history (old messages) of a conversation between these

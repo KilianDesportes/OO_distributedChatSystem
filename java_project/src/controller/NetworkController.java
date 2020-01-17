@@ -122,16 +122,15 @@ public class NetworkController extends Thread {
 				}
 
 				if (packet != null) {
-					
 
 					InetAddress address = packet.getAddress();
 
 					String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
-		
+
 					System.out.println("\n_____Message received : " + received + "_____");
-					
+
 					if (!address.equals(this.local_inetAdr)) {
-						
+
 						System.out.println("Adresse différente");
 
 						if (received.contains("isPseudoValid>")) {
@@ -165,38 +164,39 @@ public class NetworkController extends Thread {
 								&& (received.substring(6).compareTo(this.local_pseudo) != 0)) {
 
 							String pseudoRecv = received.substring(6);
-							
-							System.out.println(pseudoRecv + " is logged in, we add him in list with address " + address);
+
+							System.out
+									.println(pseudoRecv + " is logged in, we add him in list with address " + address);
 
 							this.controller.addUser(pseudoRecv, address);
 
 						} else {
 
 							if (received.compareTo("pseudoNOK") != 0) {
-								
+
 								System.out.println("Message received : " + received + " from "
 										+ packet.getAddress().getHostAddress() + " at "
 										+ this.getTime(":", " - ", "/"));
 
 								writeFileReceived(received, address);
-								
+
 							} else {
-								
+
 								System.out.println("PSEUDONOK received as an udp message - debugging print");
 							}
 
 						}
 
 					} else {
-						
+
 						System.out.println("Adresse recue égale a la mienne mienne");
 
 					}
-					
+
 					System.out.println("______________________\n");
-					
+
 				}
-				
+
 			} else if (this.current_state == State.CHECKINGPSEUDO) {
 
 				this.isPseudoValid = true;
@@ -241,18 +241,28 @@ public class NetworkController extends Thread {
 
 				// Nothing to do - State is UNCONNECTED
 			}
-			
 
 		}
 
 		System.out.println("NETWORK NOK - NETWORK CONTROLLER RUN DOWN");
 
 	}
-	
+
+	/**
+	 * Check is the state is PSEUDOOK. Return True if the state is PSEUDOOK, False
+	 * otherwise.
+	 * 
+	 * @return boolean True if the state is PSEUDOOK, False otherwise.
+	 */
 	public boolean isPseudoOK() {
 		return this.current_state == State.PSEUDOOK;
 	}
-	
+
+	/**
+	 * Set the current state on CONNECTED
+	 * 
+	 * @see State
+	 */
 	public void networkConnected() {
 		System.out.println("State is now CONNECTED");
 		this.current_state = State.CONNECTED;
@@ -268,6 +278,12 @@ public class NetworkController extends Thread {
 		this.local_pseudo = pseudo;
 
 	}
+
+	/**
+	 * Return the local pseudo.
+	 * 
+	 * @return String Local pseudo
+	 */
 	public String getPseudo() {
 
 		return this.local_pseudo;
@@ -416,15 +432,14 @@ public class NetworkController extends Thread {
 	 */
 	private void writeFileReceived(String message_received, InetAddress inetAdr_sources) {
 
-		if(controller.isConversation(inetAdr_sources) != true)
-		{
+		if (controller.isConversation(inetAdr_sources) != true) {
 			System.out.println("New conv with adr " + inetAdr_sources);
 			controller.createConv(inetAdr_sources);
 		}
 		controller.msgReceived(message_received, inetAdr_sources);
-		
+
 		new File("/HISTORY").mkdirs();
-		
+
 		String file_ipAdr = "HISTORY" + File.separator + inetAdr_sources.getHostAddress().replace('.', '_') + ".txt";
 
 		try {
@@ -439,9 +454,9 @@ public class NetworkController extends Thread {
 			PrintWriter pwriter = new PrintWriter(fwriter);
 
 			pwriter.write(inetAdr_sources.getHostAddress() + ";" + this.local_inetAdr.getHostAddress() + ";"
-					 + this.getTime(":", ":", ":") + ";" + message_received);
+					+ this.getTime(":", ":", ":") + ";" + message_received);
 			pwriter.flush();
-			
+
 			pwriter.close();
 
 		} catch (Exception e) {
@@ -462,9 +477,9 @@ public class NetworkController extends Thread {
 	 * @param inetAdr_sources  The destination address of the message you sent.
 	 */
 	public void writeFileSend(String message_sended, InetAddress inetAdr_target) {
-		
+
 		new File("HISTORY").mkdirs();
-		
+
 		String file_ipAdr = "HISTORY" + File.separator + inetAdr_target.getHostAddress().replace('.', '_') + ".txt";
 
 		try {
@@ -479,12 +494,12 @@ public class NetworkController extends Thread {
 			PrintWriter pwriter = new PrintWriter(fwriter);
 
 			pwriter.write(this.local_inetAdr.getHostAddress() + ";" + inetAdr_target.getHostAddress() + ";"
-					 + this.getTime(":", ":", ":") + ";" + message_sended);
-			
+					+ this.getTime(":", ":", ":") + ";" + message_sended);
+
 			pwriter.flush();
-			
+
 			pwriter.close();
-			
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -509,7 +524,7 @@ public class NetworkController extends Thread {
 	/**
 	 * Return true if reception threads are alive, false otherwise.
 	 * 
-	 * @return  true if reception threads are alive, false otherwise.
+	 * @return true if reception threads are alive, false otherwise.
 	 * @see ThreadReceiverMulticast
 	 * @see ThreadReceiverUDP
 	 */
@@ -525,9 +540,9 @@ public class NetworkController extends Thread {
 	 * Method used to get the local time and return a string formatted as wanted.
 	 * This method is mainly use to write hour in message view and history.
 	 * 
-	 * @param separatorHour Separator between hour numbers
-	 * @param separatorHourDate Separator between hour and date 
-	 * @param separatorDate Separator between date numbers
+	 * @param separatorHour     Separator between hour numbers
+	 * @param separatorHourDate Separator between hour and date
+	 * @param separatorDate     Separator between date numbers
 	 * @return String of formated hour
 	 * @see LocalDateTime
 	 */

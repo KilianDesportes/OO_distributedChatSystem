@@ -1,5 +1,4 @@
 /**
- * UserButton is a view class used to create a button which look like a panel.
  * These buttons will be used in MainFrame class, and will open 
  * a ConversationFrame when clicked.
  * 

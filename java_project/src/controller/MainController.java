@@ -10,11 +10,9 @@
 package controller;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import model.UserList;
 import sockets.MessageSender;
 import view.ConversationFrame;
@@ -43,19 +41,45 @@ public class MainController {
 
 	}
 
+	/**
+	 * Method to bind an IP Address to a conversation frame which is added into a
+	 * HashMap. This HasMap contains the actual list of all the opened
+	 * conversations.
+	 * 
+	 * @param inetAdd  IP Address of the distant user that you want to contact.
+	 * @param convFram The conversation frame with the said distant user.
+	 */
 	public void addConversation(InetAddress a, ConversationFrame b) {
 		tabConv.put(a, b);
 	}
 
+	/**
+	 * Method to remove a conversation from the HashMap which contained the active
+	 * conversation frame.
+	 * 
+	 * @param add IP Address of the distant user that will be removed.
+	 */
 	public void removeConversation(InetAddress add) {
 		tabConv.remove(add);
 	}
 
+	/**
+	 * Method to check if a conversation frame is currently open.
+	 * 
+	 * @param add IP Address of the distant user that you want to check.
+	 * @return Boolean True if the IP Address is already in the HashMap else False.
+	 */
 	public boolean isConversation(InetAddress add) {
 		return tabConv.containsKey(add);
 
 	}
 
+	/**
+	 * Method to create a frame conversation with a distant user. Then the frame is
+	 * added to the HashMap and binded to it's IP Address.
+	 * 
+	 * @param inetAdd IP Address of the distant user.
+	 */
 	public void createConv(InetAddress inetAdd) {
 		String pseudo = userList.returnPseudo(inetAdd);
 
@@ -71,16 +95,30 @@ public class MainController {
 
 	}
 
+	/**
+	 * Method which return the HashMap that contain the link between an address and
+	 * a frame.
+	 * 
+	 * @return HashMap HashMap that contain the link between an address and a frame.
+	 */
 	public HashMap<InetAddress, ConversationFrame> getConvList() {
 		return this.tabConv;
 	}
 
+	/**
+	 * This method append a message to a frame conversation when a message is
+	 * received. Then the frame is added to the HashMap and binded to it's IP
+	 * Address.
+	 * 
+	 * @param message_received The message received.
+	 * @param inetAdr_sources  IP Address of the distant user.
+	 */
 	public void msgReceived(String message_received, InetAddress inetAdr_sources) {
 
 		System.out.println("TabConv : " + this.tabConv);
 		System.out.println("inet_src : " + inetAdr_sources);
 		System.out.println("msg : " + message_received);
-		tabConv.get(inetAdr_sources).append(message_received);
+		tabConv.get(inetAdr_sources).appendRecv(message_received);
 
 	}
 

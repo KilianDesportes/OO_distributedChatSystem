@@ -15,8 +15,6 @@ import java.net.InetAddress;
 import java.util.*;
 
 import controller.MainController;
-import sockets.ThreadReceiverMulticast;
-import sockets.ThreadReceiverUDP;
 
 public class UserList {
 
@@ -32,8 +30,6 @@ public class UserList {
 		this.hm_user_timer = new HashMap<String, Timer>();
 	}
 
-	
-	
 	/**
 	 * Add an user to the HashMap containing IP address.
 	 * 
@@ -118,32 +114,43 @@ public class UserList {
 	public HashMap<String, Timer> getHashMapTimer() {
 		return hm_user_timer;
 	}
-	
-	public void replaceUser(String old_pseudo ,String new_pseudo) {
-		
+
+	/**
+	 * Replace an user with another in the list. This method is used when an user
+	 * change his pseudo (by re-opening the app).
+	 * 
+	 * @param old_pseudo Old Pseudo of the user
+	 * @param new_pseudo New Pseudo of the user
+	 */
+	public void replaceUser(String old_pseudo, String new_pseudo) {
+
 		InetAddress adr = this.hm_user_inet.get(old_pseudo);
 		this.hm_user_inet.remove(old_pseudo);
 		this.hm_user_inet.put(new_pseudo, adr);
 	}
-	
-	public String returnPseudo(InetAddress inetAdd)
-	{
+
+	/**
+	 * Return the pseudo corresponding to the given InetAddress.
+	 * 
+	 * @param inetAdd Address of the user
+	 * @return String pseudo of the given address
+	 */
+	public String returnPseudo(InetAddress inetAdd) {
 		Set entrySet = hm_user_inet.entrySet();
-		 
-	    // Obtaining an iterator for the entry set
-	    Iterator it = entrySet.iterator();
-	 
-	    // Iterate through HashMap entries(Key-Value pairs)
-	    System.out.println("HashMap Key-Value Pairs : ");
-	    while(it.hasNext()){
-	    	
-	       Map.Entry me = (Map.Entry)it.next();
-	       if(me.getValue().equals(inetAdd))
-	       {
-	    	   return (String)me.getKey();
-	       }
-	   
-	   }
-	    return null;
+
+		// Obtaining an iterator for the entry set
+		Iterator it = entrySet.iterator();
+
+		// Iterate through HashMap entries(Key-Value pairs)
+		System.out.println("HashMap Key-Value Pairs : ");
+		while (it.hasNext()) {
+
+			Map.Entry me = (Map.Entry) it.next();
+			if (me.getValue().equals(inetAdd)) {
+				return (String) me.getKey();
+			}
+
+		}
+		return null;
 	}
 }

@@ -37,9 +37,9 @@ public class MessageSender {
 	/**
 	 * Send a message with TCP protocol.
 	 * 
-	 * @param socket Socket used to send the message.
+	 * @param socket          Socket used to send the message.
 	 * @param message_to_send Message to send.
-	 * @param target_address Destination address for this message.
+	 * @param target_address  Destination address for this message.
 	 */
 	public void sendMessageTCP(Socket socket, String message_to_send, InetAddress target_address) {
 
@@ -62,7 +62,7 @@ public class MessageSender {
 	 * Send a message with UDP protocol.
 	 * 
 	 * @param message_to_send Message to send.
-	 * @param target_address Destination address for this message.
+	 * @param target_address  Destination address for this message.
 	 */
 	public void sendMessageUDP(String message_to_send, InetAddress target_address) {
 
