@@ -27,6 +27,8 @@
 		<delete dir="BUILD"/>
 		<delete dir="ChatSystem_App"/>
 		<delete dir="HISTORY"/>
+		<delete dir="../bin"/>
+
 		<delete includeEmptyDirs="true">
 			<fileset dir="." includes="**/*.class" />
 		</delete>
