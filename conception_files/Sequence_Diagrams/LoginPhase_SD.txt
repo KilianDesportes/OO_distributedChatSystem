@@ -1,6 +1,6 @@
 title Login phase
 
-User->System: connectionDemand()
+User->System: connect()
 
 activate System
 

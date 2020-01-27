@@ -1,0 +1,20 @@
+# Distribued Chat System 
+DESPORTES Kilian
+
+IMEKRAZ Yanis
+
+Projet 4IR - 2019/2020 - OOC & OOP section 
+
+---
+
+Conceptions Diagrams are in 'conception_files' repository.
+
+This repository is separated in 3 parts :
+- UC_Diagram -> User case diagram
+- Sequence_Diagrams -> Sequence diagrams for each UC, textual additional information in "textual_precision_UC.pdf" file
+- Class_Diagram- > Class diagram
+
+---
+
+'java_project' repository contains the whole Eclipse java project.
+Sources are in 'java_project/src' and the sources are distributed according to the use of the classes, 

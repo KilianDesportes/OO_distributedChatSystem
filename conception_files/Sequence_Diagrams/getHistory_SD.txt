@@ -1,17 +1,17 @@
 title Get History
 
-User->System: getHistory(user1,user2,@mac)
+User->System: getHistory(@ipDestUser)
 
 activate System
 
-System->FileSystem: getHistory(user1,user2,@mac)
+System->FileSystem: getHistory(@ipDestUser)
 
 activate FileSystem
 
-FileSystem-->System: history
+FileSystem-->System: messagesHistory
 
 deactivate FileSystem
 
-System-->User: history
+System-->User: messagesHistory
 
 deactivate System
