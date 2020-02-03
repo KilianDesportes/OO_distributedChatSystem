@@ -33,6 +33,12 @@ public class MainController {
 		this.loginFrame = new LoginFrame(this);
 
 		this.userList = new UserList(this);
+		
+		this.userList.addUser("User1", null);
+		this.userList.addUser("User2", null);
+		this.userList.addUser("User3", null);
+		this.userList.addUser("User4", null);
+
 
 		this.mSender = new MessageSender();
 
